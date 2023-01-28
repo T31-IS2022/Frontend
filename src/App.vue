@@ -1,0 +1,112 @@
+<script setup>
+import { RouterLink, RouterView } from "vue-router";
+
+function changeGradient(nextActive) {
+    let active = document.getElementById(nextActive);
+
+    let all = document.getElementsByClassName("background");
+
+    for (var i = 0; i < all.length; i++) {
+        all[i].classList.remove("bg-active");
+    }
+
+    active.classList.add("bg-active");
+}
+
+let darkModeActive = false;
+
+function toggleDarkMode() {
+    if (darkModeActive) {
+        document.getElementById("bg-black").classList.remove("bg-active");
+        document.getElementById(
+            "dark-toggle"
+        ).innerHTML = `<i class="fa-solid fa-moon"></i>`;
+    } else {
+        document.getElementById("bg-black").classList.add("bg-active");
+        document.getElementById(
+            "dark-toggle"
+        ).innerHTML = `<i class="fa-solid fa-sun"></i>`;
+    }
+
+    darkModeActive = !darkModeActive;
+}
+</script>
+
+<template>
+    <!--
+    <header>
+        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
+
+        <div class="wrapper">
+        <HelloWorld msg="You did it!" />
+
+        <nav>
+            <RouterLink to="/">Home</RouterLink>
+            <RouterLink to="/about">About</RouterLink>
+        </nav>
+        </div>
+    </header>
+
+    <RouterView />
+    -->
+
+    <div id="bg-orange" class="background bg-active"></div>
+    <div id="bg-yellow" class="background"></div>
+    <div id="bg-green" class="background"></div>
+    <div id="bg-blue" class="background"></div>
+    <div id="bg-violet" class="background"></div>
+    <div id="bg-black" class="dark-background"></div>
+
+    <div id="header">
+        <nav id="navbar" class="acrylic rounded-corners">
+            <RouterLink
+                to="/"
+                class="acrylic"
+                @click="changeGradient('bg-orange')"
+                >Home</RouterLink
+            >
+            <RouterLink
+                to="/oratorio"
+                class="acrylic"
+                @click="changeGradient('bg-yellow')"
+                >Oratorio</RouterLink
+            >
+            <RouterLink
+                to="/eventi"
+                class="acrylic"
+                @click="changeGradient('bg-green')"
+                >Eventi</RouterLink
+            >
+            <RouterLink
+                to="/prenotazioni"
+                class="acrylic"
+                @click="changeGradient('bg-blue')"
+                >Prenotazioni</RouterLink
+            >
+
+            <button class="acrylic" @click="changeGradient('bg-violet')">
+                Login
+            </button>
+        </nav>
+        <button id="dark-toggle" class="acrylic" @click="toggleDarkMode()">
+            <i class="fa-solid fa-moon"></i>
+        </button>
+    </div>
+
+    <div id="page-scroll">
+        <div id="content">
+            <div class="acrylic rounded-corners">
+                <h2>Lorem ipsum</h2>
+                <p>Lorem ipsum dolor sit amet</p>
+                <RouterView />
+            </div>
+        </div>
+
+        <div id="footer">
+            <div class="acrylic">Made with &#10084;&#65039; by Gruppo T31</div>
+        </div>
+    </div>
+</template>
+
+<style scoped>
+</style>
