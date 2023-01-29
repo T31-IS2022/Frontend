@@ -1,26 +1,29 @@
 // https://vuejs.org/guide/scaling-up/state-management.html#simple-state-management-with-reactivity-api
 
-import { reactive } from 'vue'
+import { reactive } from "vue";
 
 const loggedUser = reactive({
     token: undefined,
     email: undefined,
     id: undefined,
-    self: undefined
-})
+    nome: undefined,
+    cognome: undefined,
+});
 
-function setLoggedUser (data) {
-    loggedUser.token = data.token;
+function setLoggedUser(data) {
+    loggedUser.token ??= data.token;
     loggedUser.email = data.email;
     loggedUser.id = data.id;
-    loggedUser.self = data.self;
+    loggedUser.nome = data.nome;
+    loggedUser.cognome = data.cognome;
 }
 
-function clearLoggedUser () {
+function clearLoggedUser() {
     loggedUser.token = undefined;
     loggedUser.email = undefined;
     loggedUser.id = undefined;
-    loggedUser.self = undefined;
+    nome = undefined;
+    cognome = undefined;
 }
 
-export { loggedUser, setLoggedUser, clearLoggedUser } 
+export { loggedUser, setLoggedUser, clearLoggedUser };

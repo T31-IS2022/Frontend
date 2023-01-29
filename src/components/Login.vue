@@ -36,9 +36,11 @@ function login() {
                     console.error(data.message);
                 } else {
                     // recupero le informazioni su questo utente
+                    setLoggedUser(data);
+
                     getUserData(email.value);
 
-                    setLoggedUser(data);
+                    console.log(data);
                     // loggedUser.token = data.token;
                     // loggedUser.email = data.email;
                     // loggedUser.id = data.id;
@@ -57,12 +59,22 @@ function logout() {
 }
 
 function getUserData(email) {
-    // TODO mi manca il token, devo aggiungerlo alla richiesta
-    fetch(
-        API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email })
-    ).then((resp) =>
+    console.log(loggedUser.token);
+
+    const tokenHeader = new Headers();
+
+    tokenHeader.append("x-access-token", loggedUser.token);
+
+    fetch(API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email }), {
+        headers: tokenHeader,
+    }).then((resp) =>
         resp.json().then(function (data) {
-            console.log(data);
+            if (!resp.ok) {
+                console.error(data.message);
+            } else {
+                console.log(data);
+                setLoggedUser(data);
+            }
         })
     );
 }
@@ -92,7 +104,7 @@ function togglePopupLogin() {
 <template>
     <button id="login-button" class="acrylic" @click="togglePopupLogin()">
         <span v-if="loggedUser.token">
-            Ciao {{ loggedUser.email }}
+            Ciao {{ loggedUser.nome }}
             <!--
             <a :href="HOST + '/' + loggedUser.self">{{ loggedUser.email }}</a>
             <button type="button" @click="logout">LogOut</button>
