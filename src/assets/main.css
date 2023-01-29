@@ -296,7 +296,8 @@ html {
     align-items: center;
 }
 
-#navbar > * {
+#navbar > a,
+#navbar > button {
     flex-grow: 1;
     padding: 20px;
     margin: 0px 20px;
@@ -318,7 +319,8 @@ html {
     text-decoration: inherit;
 }
 
-#navbar > *:hover {
+#navbar > a:hover,
+#navbar > button:hover {
     background: rgba(196, 196, 196, 0);
 }
 
@@ -353,6 +355,9 @@ html {
 #content {
     min-height: calc(100vh - calc(var(--header-height) + var(--footer-height)));
     padding: 10px 20% 10px 20%;
+
+    z-index: -1;
+    position: relative;
 }
 
 #footer {

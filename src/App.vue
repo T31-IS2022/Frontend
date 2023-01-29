@@ -1,5 +1,6 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
+import Login from "@/components/Login.vue";
 
 function changeGradient(nextActive) {
     let active = document.getElementById(nextActive);
@@ -83,10 +84,13 @@ function toggleDarkMode() {
                 @click="changeGradient('bg-blue')"
                 >Prenotazioni</RouterLink
             >
-
+            <!-- 
             <button class="acrylic" @click="changeGradient('bg-violet')">
                 Login
             </button>
+            -->
+            <!-- componente per eseguire il login -->
+            <Login />
         </nav>
         <button id="dark-toggle" class="acrylic" @click="toggleDarkMode()">
             <i class="fa-solid fa-moon"></i>
@@ -98,6 +102,7 @@ function toggleDarkMode() {
             <div class="acrylic rounded-corners">
                 <h2>Lorem ipsum</h2>
                 <p>Lorem ipsum dolor sit amet</p>
+                <!-- componente che visualizza la vista selezionata nella navbar -->
                 <RouterView />
             </div>
         </div>
