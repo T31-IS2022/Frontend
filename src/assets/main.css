@@ -105,17 +105,9 @@ html {
 #bg-green {
     background: hsla(190, 63%, 60%, 1);
 
-    background: linear-gradient(
-        45deg,
-        hsla(190, 63%, 60%, 1) 0%,
-        hsla(163, 74%, 68%, 1) 100%
-    );
+    background: linear-gradient(45deg, hsla(190, 63%, 60%, 1) 0%, hsla(163, 74%, 68%, 1) 100%);
 
-    background: -moz-linear-gradient(
-        45deg,
-        hsla(190, 63%, 60%, 1) 0%,
-        hsla(163, 74%, 68%, 1) 100%
-    );
+    background: -moz-linear-gradient(45deg, hsla(190, 63%, 60%, 1) 0%, hsla(163, 74%, 68%, 1) 100%);
 
     background: -webkit-linear-gradient(
         45deg,
@@ -129,17 +121,9 @@ html {
 #bg-orange {
     background: hsla(316, 100%, 60%, 1);
 
-    background: linear-gradient(
-        45deg,
-        hsla(316, 100%, 60%, 1) 0%,
-        hsla(15, 100%, 55%, 1) 80%
-    );
+    background: linear-gradient(45deg, hsla(316, 100%, 60%, 1) 0%, hsla(15, 100%, 55%, 1) 80%);
 
-    background: -moz-linear-gradient(
-        45deg,
-        hsla(316, 100%, 60%, 1) 0%,
-        hsla(15, 100%, 55%, 1) 80%
-    );
+    background: -moz-linear-gradient(45deg, hsla(316, 100%, 60%, 1) 0%, hsla(15, 100%, 55%, 1) 80%);
 
     background: -webkit-linear-gradient(
         45deg,
@@ -151,17 +135,9 @@ html {
 #bg-yellow {
     background: hsla(58, 100%, 68%, 1);
 
-    background: linear-gradient(
-        45deg,
-        hsla(58, 100%, 68%, 1) 0%,
-        hsla(33, 100%, 53%, 1) 100%
-    );
+    background: linear-gradient(45deg, hsla(58, 100%, 68%, 1) 0%, hsla(33, 100%, 53%, 1) 100%);
 
-    background: -moz-linear-gradient(
-        45deg,
-        hsla(58, 100%, 68%, 1) 0%,
-        hsla(33, 100%, 53%, 1) 100%
-    );
+    background: -moz-linear-gradient(45deg, hsla(58, 100%, 68%, 1) 0%, hsla(33, 100%, 53%, 1) 100%);
 
     background: -webkit-linear-gradient(
         45deg,
@@ -175,11 +151,7 @@ html {
 #bg-violet {
     background: hsla(294, 100%, 55%, 1);
 
-    background: linear-gradient(
-        45deg,
-        hsla(294, 100%, 55%, 1) 0%,
-        hsla(238, 100%, 71%, 1) 100%
-    );
+    background: linear-gradient(45deg, hsla(294, 100%, 55%, 1) 0%, hsla(238, 100%, 71%, 1) 100%);
 
     background: -moz-linear-gradient(
         45deg,
@@ -199,17 +171,9 @@ html {
 #bg-blue {
     background: hsla(248, 87%, 36%, 1);
 
-    background: linear-gradient(
-        45deg,
-        hsla(248, 87%, 36%, 1) 0%,
-        hsla(191, 75%, 60%, 1) 100%
-    );
+    background: linear-gradient(45deg, hsla(248, 87%, 36%, 1) 0%, hsla(191, 75%, 60%, 1) 100%);
 
-    background: -moz-linear-gradient(
-        45deg,
-        hsla(248, 87%, 36%, 1) 0%,
-        hsla(191, 75%, 60%, 1) 100%
-    );
+    background: -moz-linear-gradient(45deg, hsla(248, 87%, 36%, 1) 0%, hsla(191, 75%, 60%, 1) 100%);
 
     background: -webkit-linear-gradient(
         45deg,
@@ -223,17 +187,9 @@ html {
 #bg-black {
     background: hsla(205, 46%, 10%, 1);
 
-    background: linear-gradient(
-        45deg,
-        hsla(205, 46%, 10%, 1) 0%,
-        hsla(191, 28%, 23%, 1) 100%
-    );
+    background: linear-gradient(45deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 100%);
 
-    background: -moz-linear-gradient(
-        45deg,
-        hsla(205, 46%, 10%, 1) 0%,
-        hsla(191, 28%, 23%, 1) 100%
-    );
+    background: -moz-linear-gradient(45deg, hsla(205, 46%, 10%, 1) 0%, hsla(191, 28%, 23%, 1) 100%);
 
     background: -webkit-linear-gradient(
         45deg,
@@ -306,6 +262,7 @@ html {
     flex-grow: 1;
     padding: 20px;
     margin: 0px 20px;
+    height: 64px;
 
     border: none;
     border-top-right-radius: 10px;
@@ -317,6 +274,12 @@ html {
 
     -webkit-transition: background 0.2s ease-in-out;
     transition: background 0.2s ease-in-out;
+
+    -webkit-transition: width 0.2s ease-in-out;
+    transition: width 0.2s ease-in-out;
+
+    -webkit-transition: height 0.2s ease-in-out;
+    transition: height 0.2s ease-in-out;
 }
 
 #navbar a {

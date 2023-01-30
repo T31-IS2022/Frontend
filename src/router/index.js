@@ -4,6 +4,9 @@ import OratorioView from "../views/OratorioView.vue";
 import EventsView from "../views/EventsView.vue";
 import BookingsView from "../views/BookingsView.vue";
 
+import ProfileView from "../views/ProfileView.vue";
+import SignupView from "../views/SignupView.vue";
+
 const router = createRouter({
     history: createWebHistory(import.meta.env.BASE_URL),
     routes: [
@@ -24,8 +27,18 @@ const router = createRouter({
         },
         {
             path: "/prenotazioni",
-            name: "paginaprenotazioni",
+            name: "paginaPrenotazioni",
             component: BookingsView,
+        },
+        {
+            path: "/registrazione",
+            name: "paginaRegistrazione",
+            component: SignupView,
+        },
+        {
+            path: "/profilo",
+            name: "paginaProfilo",
+            component: ProfileView,
         },
         /*
     {

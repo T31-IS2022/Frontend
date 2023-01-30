@@ -8,6 +8,7 @@ const loggedUser = reactive({
     id: undefined,
     nome: undefined,
     cognome: undefined,
+    URLfoto: undefined,
 });
 
 function setLoggedUser(data) {
@@ -16,6 +17,7 @@ function setLoggedUser(data) {
     loggedUser.id = data.id;
     loggedUser.nome = data.nome;
     loggedUser.cognome = data.cognome;
+    loggedUser.URLfoto = data.URLfoto;
 }
 
 function clearLoggedUser() {
@@ -24,6 +26,7 @@ function clearLoggedUser() {
     loggedUser.id = undefined;
     loggedUser.nome = undefined;
     loggedUser.cognome = undefined;
+    loggedUser.URLfoto = undefined;
 }
 
 export { loggedUser, setLoggedUser, clearLoggedUser };

@@ -116,14 +116,42 @@ function togglePopupLogin() {
 
 <template>
     <button id="login-button" class="acrylic" @click="togglePopupLogin()">
-        <span v-if="loggedUser.token"> Ciao {{ loggedUser.nome }} </span>
-        <span v-if="!loggedUser.token">Login</span>
+        <span v-if="loggedUser.token">
+            {{ loggedUser.nome || "Account" }}
+        </span>
+        <span v-if="!loggedUser.token">Account</span>
     </button>
     <div id="popup-login">
         <div class="acrylic rounded-corners">
             <form>
                 <span v-if="loggedUser.token">
-                    Welcome {{ loggedUser.nome }}
+                    <table id="profile-card">
+                        <tr>
+                            <td>
+                                <img
+                                    :src="HOST + loggedUser.URLfoto"
+                                    class="profile-picture"
+                                />
+                            </td>
+                            <td>
+                                <span id="profile-name">
+                                    {{ loggedUser.nome }}
+                                    {{ loggedUser.cognome }}
+                                </span>
+                                <span> {{ loggedUser.email }} </span>
+
+                                <span
+                                    >Guarda il tuo
+                                    <RouterLink
+                                        to="/profilo"
+                                        @click="togglePopupLogin()"
+                                        >Profilo</RouterLink
+                                    >
+                                </span>
+                            </td>
+                        </tr>
+                    </table>
+
                     <div class="button-line">
                         <button
                             type="button"
@@ -139,7 +167,7 @@ function togglePopupLogin() {
                                 class="fa-solid fa-circle-xmark"
                                 aria-hidden="true"
                             ></i>
-                            <span>Indietro</span>
+                            <span>Chiudi</span>
                         </button>
                         <button
                             type="button"
@@ -204,7 +232,16 @@ function togglePopupLogin() {
                     </button>
                     <button type="button" @click="login">Login</button> 
                     -->
-                    <a :href="hello">Non hai un account? Registrati ora!</a>
+
+                    <span
+                        >Non hai un account?
+                        <RouterLink
+                            to="/registrazione"
+                            @click="togglePopupLogin()"
+                            >Registrati ora!</RouterLink
+                        >
+                    </span>
+
                     <div class="button-line">
                         <button
                             type="button"
@@ -264,5 +301,19 @@ function togglePopupLogin() {
     margin-top: 10px;
     display: flex;
     justify-content: space-between;
+}
+
+#profile-card .profile-picture {
+    width: 120px;
+    border-radius: 120px;
+}
+
+#profile-card span {
+    display: block;
+    margin: 10px 20px;
+}
+
+#profile-card #profile-name {
+    font-size: 20px;
 }
 </style>
