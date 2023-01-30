@@ -1,4 +1,4 @@
-/* @import "./base.css"; */
+@import "./input.css";
 @import url("https://fonts.googleapis.com/css2?family=Roboto&display=swap");
 
 #app {
@@ -275,6 +275,11 @@ html {
     padding: 20px;
 }
 
+.rounded-corners-small {
+    border-top-right-radius: 10px;
+    border-bottom-left-radius: 10px;
+}
+
 #header {
     height: var(--header-height);
     width: 100vw;
@@ -370,17 +375,20 @@ html {
     display: flex;
     align-items: center;
     justify-content: center;
-
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
-    user-select: none; /* Standard */
 }
 
 #footer > div {
     width: fit-content;
-    border-top-right-radius: 10px;
-    border-bottom-left-radius: 10px;
     line-height: calc(var(--footer-height) - 20px);
     padding: 0px 40px;
+}
+
+.unselectable {
+    /* testo non selezionabile */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }

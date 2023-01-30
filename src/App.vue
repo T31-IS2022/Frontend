@@ -107,8 +107,10 @@ function toggleDarkMode() {
             </div>
         </div>
 
-        <div id="footer">
-            <div class="acrylic">Made with &#10084;&#65039; by Gruppo T31</div>
+        <div id="footer" class="unselectable">
+            <div class="rounded-corners-small acrylic">
+                Made with &#10084;&#65039; by Gruppo T31
+            </div>
         </div>
     </div>
 </template>

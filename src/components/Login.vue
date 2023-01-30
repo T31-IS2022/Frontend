@@ -9,14 +9,18 @@ import {
 const HOST = `http://localhost:3000`;
 const API_USER_URL = HOST + `/utente`;
 
-const email = ref("test@gmail.com");
-const password = ref("1234#");
+//variabili in che contengono il valore dei campi del login
+const email = ref("");
+const password = ref("");
 
 // const loggedUser = ref({})
 // const loggedUser = defineProps(['loggedUser'])
 const emit = defineEmits(["login"]);
 
 function login() {
+    //chiudo il popup
+    togglePopupLogin();
+
     //inserisco i valori come campi di un form
     const loginData = new URLSearchParams();
     loginData.append("email", email.value);
@@ -55,6 +59,9 @@ function login() {
 }
 
 function logout() {
+    //chiudo il popup
+    togglePopupLogin();
+
     clearLoggedUser();
 }
 
@@ -85,14 +92,20 @@ function togglePopupLogin() {
     let popup = document.getElementById("popup-login");
     let navbar = document.getElementById("navbar");
 
-    let navbarHeight = window
-        .getComputedStyle(navbar, null)
-        .getPropertyValue("height");
+    document.body.appendChild(popup);
 
     if (!popupLoginVisible) {
-        popup.style.right = "0px";
-        popup.style.top = navbarHeight;
         popup.style.display = "block";
+
+        //posizionamento del popup sotto alla navbar
+        let popupRect = popup.getBoundingClientRect();
+        var navbarRect = navbar.getBoundingClientRect();
+
+        let popupRight = window.innerWidth - navbarRect.x - navbarRect.width;
+        let popupTop = navbarRect.y + navbarRect.height;
+
+        popup.style.right = popupRight + "px";
+        popup.style.top = popupTop + "px";
     } else {
         popup.style.display = "none";
     }
@@ -103,27 +116,129 @@ function togglePopupLogin() {
 
 <template>
     <button id="login-button" class="acrylic" @click="togglePopupLogin()">
-        <span v-if="loggedUser.token">
-            Ciao {{ loggedUser.nome }}
-            <!--
-            <a :href="HOST + '/' + loggedUser.self">{{ loggedUser.email }}</a>
-            <button type="button" @click="logout">LogOut</button>
-            -->
-        </span>
+        <span v-if="loggedUser.token"> Ciao {{ loggedUser.nome }} </span>
         <span v-if="!loggedUser.token">Login</span>
     </button>
     <div id="popup-login">
         <div class="acrylic rounded-corners">
             <form>
                 <span v-if="loggedUser.token">
-                    Welcome
-                    <button type="button" @click="logout">LogOut</button>
+                    Welcome {{ loggedUser.nome }}
+                    <div class="button-line">
+                        <button
+                            type="button"
+                            class="
+                                form-button
+                                red
+                                animated
+                                rounded-corners-small
+                            "
+                            @click="togglePopupLogin()"
+                        >
+                            <i
+                                class="fa-solid fa-circle-xmark"
+                                aria-hidden="true"
+                            ></i>
+                            <span>Indietro</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="
+                                form-button
+                                green
+                                animated
+                                rounded-corners-small
+                            "
+                            @click="logout"
+                        >
+                            <i
+                                class="fa-solid fa-right-from-bracket"
+                                aria-hidden="true"
+                            ></i>
+                            <span>Logout</span>
+                        </button>
+                    </div>
                 </span>
 
                 <span v-if="!loggedUser.token">
-                    <input name="email" v-model="email" />
-                    <input name="password" v-model="password" />
-                    <button type="button" @click="login">LogIn</button>
+                    <div class="wrap-input100">
+                        <input
+                            type="text"
+                            class="input100"
+                            name="email"
+                            placeholder="Email"
+                            v-model="email"
+                        />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i
+                                class="fa-solid fa-envelope"
+                                aria-hidden="true"
+                            ></i>
+                        </span>
+                    </div>
+                    <div class="wrap-input100">
+                        <input
+                            type="password"
+                            class="input100"
+                            name="password"
+                            placeholder="Password"
+                            v-model="password"
+                        />
+                        <span class="focus-input100"></span>
+                        <span class="symbol-input100">
+                            <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                        </span>
+                    </div>
+
+                    <!-- campi di input standard 
+                    <input name="email" v-model="email" placeholder="email" />
+                    <input
+                        type="password"
+                        name="password"
+                        v-model="password"
+                        placeholder="password"
+                    />
+                    <button type="button" @click="togglePopupLogin()">
+                        Indietro
+                    </button>
+                    <button type="button" @click="login">Login</button> 
+                    -->
+                    <a :href="hello">Non hai un account? Registrati ora!</a>
+                    <div class="button-line">
+                        <button
+                            type="button"
+                            class="
+                                form-button
+                                red
+                                animated
+                                rounded-corners-small
+                            "
+                            @click="togglePopupLogin()"
+                        >
+                            <i
+                                class="fa-solid fa-circle-xmark"
+                                aria-hidden="true"
+                            ></i>
+                            <span>Indietro</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="
+                                form-button
+                                green
+                                animated
+                                rounded-corners-small
+                            "
+                            @click="login"
+                        >
+                            <i
+                                class="fa-solid fa-right-to-bracket"
+                                aria-hidden="true"
+                            ></i>
+                            <span>Login</span>
+                        </button>
+                    </div>
                 </span>
             </form>
         </div>
@@ -143,5 +258,11 @@ function togglePopupLogin() {
 
 #popup-login > div {
     border-top-right-radius: 0px;
+}
+
+#popup-login div.button-line {
+    margin-top: 10px;
+    display: flex;
+    justify-content: space-between;
 }
 </style>

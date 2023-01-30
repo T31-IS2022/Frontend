@@ -22,8 +22,8 @@ function clearLoggedUser() {
     loggedUser.token = undefined;
     loggedUser.email = undefined;
     loggedUser.id = undefined;
-    nome = undefined;
-    cognome = undefined;
+    loggedUser.nome = undefined;
+    loggedUser.cognome = undefined;
 }
 
 export { loggedUser, setLoggedUser, clearLoggedUser };
