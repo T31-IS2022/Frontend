@@ -19,14 +19,10 @@ let darkModeActive = false;
 function toggleDarkMode() {
     if (darkModeActive) {
         document.getElementById("bg-black").classList.remove("bg-active");
-        document.getElementById(
-            "dark-toggle"
-        ).innerHTML = `<i class="fa-solid fa-moon"></i>`;
+        document.getElementById("dark-toggle").innerHTML = `<i class="fa-solid fa-moon"></i>`;
     } else {
         document.getElementById("bg-black").classList.add("bg-active");
-        document.getElementById(
-            "dark-toggle"
-        ).innerHTML = `<i class="fa-solid fa-sun"></i>`;
+        document.getElementById("dark-toggle").innerHTML = `<i class="fa-solid fa-sun"></i>`;
     }
 
     darkModeActive = !darkModeActive;
@@ -60,28 +56,16 @@ function toggleDarkMode() {
 
     <div id="header">
         <nav id="navbar" class="acrylic rounded-corners">
-            <RouterLink
-                to="/"
-                class="acrylic"
-                @click="changeGradient('bg-orange')"
+            <RouterLink to="/" class="acrylic" @click="changeGradient('bg-orange')"
                 >Home</RouterLink
             >
-            <RouterLink
-                to="/oratorio"
-                class="acrylic"
-                @click="changeGradient('bg-yellow')"
+            <RouterLink to="/oratorio" class="acrylic" @click="changeGradient('bg-yellow')"
                 >Oratorio</RouterLink
             >
-            <RouterLink
-                to="/eventi"
-                class="acrylic"
-                @click="changeGradient('bg-green')"
+            <RouterLink to="/eventi" class="acrylic" @click="changeGradient('bg-green')"
                 >Eventi</RouterLink
             >
-            <RouterLink
-                to="/prenotazioni"
-                class="acrylic"
-                @click="changeGradient('bg-blue')"
+            <RouterLink to="/prenotazioni" class="acrylic" @click="changeGradient('bg-blue')"
                 >Prenotazioni</RouterLink
             >
             <!-- 

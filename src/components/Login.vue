@@ -1,10 +1,12 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import {
-    loggedUser,
-    setLoggedUser,
-    clearLoggedUser,
-} from "../states/loggedUser.js";
+import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
+
+onMounted(() => {
+    let popup = document.getElementById("popup-login");
+
+    document.body.appendChild(popup);
+});
 
 const HOST = `http://localhost:3000`;
 const API_USER_URL = HOST + `/utente`;
@@ -92,8 +94,6 @@ function togglePopupLogin() {
     let popup = document.getElementById("popup-login");
     let navbar = document.getElementById("navbar");
 
-    document.body.appendChild(popup);
-
     if (!popupLoginVisible) {
         popup.style.display = "block";
 
@@ -128,10 +128,7 @@ function togglePopupLogin() {
                     <table id="profile-card">
                         <tr>
                             <td>
-                                <img
-                                    :src="HOST + loggedUser.URLfoto"
-                                    class="profile-picture"
-                                />
+                                <img :src="HOST + loggedUser.URLfoto" class="profile-picture" />
                             </td>
                             <td>
                                 <span id="profile-name">
@@ -142,9 +139,7 @@ function togglePopupLogin() {
 
                                 <span
                                     >Guarda il tuo
-                                    <RouterLink
-                                        to="/profilo"
-                                        @click="togglePopupLogin()"
+                                    <RouterLink to="/profilo" @click="togglePopupLogin()"
                                         >Profilo</RouterLink
                                     >
                                 </span>
@@ -155,34 +150,16 @@ function togglePopupLogin() {
                     <div class="button-line">
                         <button
                             type="button"
-                            class="
-                                form-button
-                                red
-                                animated
-                                rounded-corners-small
-                            "
-                            @click="togglePopupLogin()"
-                        >
-                            <i
-                                class="fa-solid fa-circle-xmark"
-                                aria-hidden="true"
-                            ></i>
+                            class="form-button red animated rounded-corners-small"
+                            @click="togglePopupLogin()">
+                            <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                             <span>Chiudi</span>
                         </button>
                         <button
                             type="button"
-                            class="
-                                form-button
-                                green
-                                animated
-                                rounded-corners-small
-                            "
-                            @click="logout"
-                        >
-                            <i
-                                class="fa-solid fa-right-from-bracket"
-                                aria-hidden="true"
-                            ></i>
+                            class="form-button green animated rounded-corners-small"
+                            @click="logout">
+                            <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                             <span>Logout</span>
                         </button>
                     </div>
@@ -195,14 +172,10 @@ function togglePopupLogin() {
                             class="input100"
                             name="email"
                             placeholder="Email"
-                            v-model="email"
-                        />
+                            v-model="email" />
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
-                            <i
-                                class="fa-solid fa-envelope"
-                                aria-hidden="true"
-                            ></i>
+                            <i class="fa-solid fa-envelope" aria-hidden="true"></i>
                         </span>
                     </div>
                     <div class="wrap-input100">
@@ -211,8 +184,7 @@ function togglePopupLogin() {
                             class="input100"
                             name="password"
                             placeholder="Password"
-                            v-model="password"
-                        />
+                            v-model="password" />
                         <span class="focus-input100"></span>
                         <span class="symbol-input100">
                             <i class="fa-solid fa-lock" aria-hidden="true"></i>
@@ -221,9 +193,7 @@ function togglePopupLogin() {
 
                     <span
                         >Non hai un account?
-                        <RouterLink
-                            to="/registrazione"
-                            @click="togglePopupLogin()"
+                        <RouterLink to="/registrazione" @click="togglePopupLogin()"
                             >Registrati ora!</RouterLink
                         >
                     </span>
@@ -231,34 +201,16 @@ function togglePopupLogin() {
                     <div class="button-line">
                         <button
                             type="button"
-                            class="
-                                form-button
-                                red
-                                animated
-                                rounded-corners-small
-                            "
-                            @click="togglePopupLogin()"
-                        >
-                            <i
-                                class="fa-solid fa-circle-xmark"
-                                aria-hidden="true"
-                            ></i>
+                            class="form-button red animated rounded-corners-small"
+                            @click="togglePopupLogin()">
+                            <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                             <span>Chiudi</span>
                         </button>
                         <button
                             type="button"
-                            class="
-                                form-button
-                                green
-                                animated
-                                rounded-corners-small
-                            "
-                            @click="login"
-                        >
-                            <i
-                                class="fa-solid fa-right-to-bracket"
-                                aria-hidden="true"
-                            ></i>
+                            class="form-button green animated rounded-corners-small"
+                            @click="login">
+                            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
                             <span>Login</span>
                         </button>
                     </div>

@@ -3,8 +3,70 @@ import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 
 onMounted(() => {
+    //TODO potrei controllare se l'utente è loggato, e in tal caso mandarlo al profilo
     console.log("registrazione mounted");
 });
+
+const HOST = `http://localhost:3000`;
+const API_USER_URL = HOST + `/utente`;
+
+//variabili in che contengono il valore dei campi del form di registrazione
+const nome = ref("");
+const cognome = ref("");
+const email = ref("");
+const password = ref("");
+const ripetiPassword = ref("");
+const indirizzo = ref("");
+const civico = ref("");
+const citta = ref("");
+const telefono = ref("");
+
+// const loggedUser = ref({})
+// const loggedUser = defineProps(['loggedUser'])
+//const emit = defineEmits(["login"]);
+
+function signup() {
+    if (password.value != ripetiPassword.value) {
+        //TODO mostrare un errore
+    } else {
+        let indirizzoCompleto = "";
+        if (indirizzo.value && civico.value && citta.value) {
+            indirizzoCompleto = indirizzo.value + " " + civico.value + ", " + citta.value;
+        }
+
+        //inserisco i valori come campi di un form
+        const signupData = new URLSearchParams();
+        signupData.append("nome", nome.value);
+        signupData.append("cognome", cognome.value);
+        signupData.append("email", email.value);
+        signupData.append("password", password.value);
+        signupData.append("indirizzo", indirizzoCompleto);
+        signupData.append("telefono", telefono.value);
+
+        fetch(API_USER_URL + "/registrazione", {
+            method: "POST",
+            body: signupData,
+        }).then((resp) =>
+            resp
+                .json()
+                .then(function (data) {
+                    console.log(resp);
+                    console.log(data);
+
+                    if (!resp.ok) {
+                        console.error(data.message);
+                    } else {
+                        console.log(data);
+                        //TODO dire all'utente di guardare la sua casella di posta
+                    }
+
+                    //emit("login", loggedUser);
+                    return;
+                })
+                .catch((error) => console.error(error))
+        );
+    }
+}
 </script>
 
 <template>
@@ -87,7 +149,7 @@ onMounted(() => {
                                     class="input100"
                                     name="password"
                                     placeholder="Ripeti la password"
-                                    v-model="password" />
+                                    v-model="ripetiPassword" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
                                     <i class="fa-solid fa-lock" aria-hidden="true"></i>
