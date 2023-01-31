@@ -219,20 +219,6 @@ function togglePopupLogin() {
                         </span>
                     </div>
 
-                    <!-- campi di input standard 
-                    <input name="email" v-model="email" placeholder="email" />
-                    <input
-                        type="password"
-                        name="password"
-                        v-model="password"
-                        placeholder="password"
-                    />
-                    <button type="button" @click="togglePopupLogin()">
-                        Indietro
-                    </button>
-                    <button type="button" @click="login">Login</button> 
-                    -->
-
                     <span
                         >Non hai un account?
                         <RouterLink
@@ -257,7 +243,7 @@ function togglePopupLogin() {
                                 class="fa-solid fa-circle-xmark"
                                 aria-hidden="true"
                             ></i>
-                            <span>Indietro</span>
+                            <span>Chiudi</span>
                         </button>
                         <button
                             type="button"

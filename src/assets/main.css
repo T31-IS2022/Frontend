@@ -323,9 +323,6 @@ html {
 #content {
     min-height: calc(100vh - calc(var(--header-height) + var(--footer-height)));
     padding: 10px 20% 10px 20%;
-
-    z-index: -1;
-    position: relative;
 }
 
 #footer {

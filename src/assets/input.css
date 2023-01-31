@@ -1,11 +1,4 @@
 /* stile campi di input */
-:root {
-    --input100-col: #666666;
-    --input100-bg: #e6e6e6;
-    --input100-shadow: rgba(87, 184, 70, 0.8);
-    --input100-hover-icon: #57b846;
-}
-
 input,
 select {
     border: none;
@@ -125,11 +118,6 @@ input:-ms-input-placeholder {
 .input100:focus + .focus-input100 + .symbol-input100 {
     color: #555555;
     padding-left: 20px;
-}
-
-/* modifiche ai campi autocomplete che sono anche input100 */
-.wrap-input100 .autocomplete {
-    width: 100%;
 }
 /* fine stile campi di input */
 
