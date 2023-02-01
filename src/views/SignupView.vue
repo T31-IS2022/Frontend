@@ -43,7 +43,8 @@ function signup() {
         signupData.append("indirizzo", indirizzoCompleto);
         signupData.append("telefono", telefono.value);
 
-        const foto = document.getElementById('fileInput')
+        //la foto va prelevata a mano
+        const foto = document.getElementById("file-input");
         signupData.append("foto", foto.files[0]);
 
         fetch(API_USER_URL + "/registrazione", {
@@ -70,6 +71,31 @@ function signup() {
         );
     }
 }
+
+//simula un click sul campo nascosto per caricare la foto
+function selectPhoto() {
+    const fileInput = document.getElementById("file-input");
+    fileInput.click();
+}
+
+function showPhoto() {
+    const fileInput = document.getElementById("file-input");
+    const img = document.getElementById("profile-picture");
+    const file = fileInput.files[0];
+
+    //controllo se il file è stato inserito
+    if (!file) {
+        resetPhoto();
+    } else {
+        const url = URL.createObjectURL(file);
+        img.setAttribute("src", url);
+    }
+}
+
+function resetPhoto() {
+    const img = document.getElementById("profile-picture");
+    img.setAttribute("src", "/src/assets/profile-default.png");
+}
 </script>
 
 <template>
@@ -81,7 +107,16 @@ function signup() {
                 <table id="image-section">
                     <tr>
                         <td rowspan="2">
-                            <img src="@/assets/profile-default.png" class="profile-picture" />
+                            <img
+                                src="@/assets/profile-default.png"
+                                id="profile-picture"
+                                @click="selectPhoto()" />
+                            <input
+                                type="file"
+                                id="file-input"
+                                accept="image/png, image/jpeg"
+                                name="foto"
+                                @change="showPhoto()" />
                         </td>
                         <td>
                             <div class="wrap-input100">
@@ -222,26 +257,13 @@ function signup() {
                             </div>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="file"
-                                    id="fileInput"
-                                    accept="image/png, image/jpg"
-                                    class="input100"
-                                    name="file" />
-                                <span class="focus-input100"></span>
-                            </div>
-                        </td>
-                    </tr>
                 </table>
 
                 <div class="button-line">
                     <button
                         type="reset"
                         class="form-button red animated rounded-corners-small"
-                        @click="null">
+                        @click="resetPhoto()">
                         <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                         <span>Annulla</span>
                     </button>
@@ -264,9 +286,17 @@ function signup() {
     margin: 0 auto;
 }
 
-#form-signup .profile-picture {
+#form-signup #profile-picture {
     width: 250px;
+    height: 250px;
     border-radius: 250px;
+    cursor: pointer;
+
+    transition: opacity 0.5s ease;
+}
+
+#form-signup #profile-picture:hover {
+    opacity: 0.6;
 }
 
 #form-signup table {
@@ -279,6 +309,10 @@ function signup() {
 
 #form-signup table td {
     padding: 0px 20px;
+}
+
+#form-signup #file-input {
+    display: none;
 }
 
 #form-signup #civico {
