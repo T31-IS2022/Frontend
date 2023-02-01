@@ -35,13 +35,16 @@ function signup() {
         }
 
         //inserisco i valori come campi di un form
-        const signupData = new URLSearchParams();
+        const signupData = new FormData();
         signupData.append("nome", nome.value);
         signupData.append("cognome", cognome.value);
         signupData.append("email", email.value);
         signupData.append("password", password.value);
         signupData.append("indirizzo", indirizzoCompleto);
         signupData.append("telefono", telefono.value);
+
+        const foto = document.getElementById('fileInput')
+        signupData.append("foto", foto.files[0]);
 
         fetch(API_USER_URL + "/registrazione", {
             method: "POST",
@@ -216,6 +219,19 @@ function signup() {
                                 <span class="symbol-input100">
                                     <i class="fa-solid fa-phone" aria-hidden="true"></i>
                                 </span>
+                            </div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <div class="wrap-input100">
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    accept="image/png, image/jpg"
+                                    class="input100"
+                                    name="file" />
+                                <span class="focus-input100"></span>
                             </div>
                         </td>
                     </tr>
