@@ -1,10 +1,15 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
+import { reactive } from "vue";
 
 onMounted(() => {
     //TODO potrei controllare se l'utente è loggato, e in tal caso mandarlo al profilo
     console.log("registrazione mounted");
+});
+
+let signupStatus = reactive({
+    status: false,
 });
 
 const HOST = `http://localhost:3000`;
@@ -43,6 +48,8 @@ function signup() {
         signupData.append("indirizzo", indirizzoCompleto);
         signupData.append("telefono", telefono.value);
 
+        // prende l'immagine originale e la ritaglia in base a come e stata posizionata nel canvas dall'utente
+        // questo viene fatto passando per un altro canvas hidden
         const canvas = document.getElementById('canvas2');
         const img = document.getElementById('img');
 
@@ -72,6 +79,7 @@ function signup() {
                     } else {
                         console.log(data);
                         //TODO dire all'utente di guardare la sua casella di posta
+                        signupStatus.status = true;
                     }
 
                     //emit("login", loggedUser);
@@ -88,6 +96,7 @@ let x,y;
 let oldx,oldy,premuto;
 let listener;
 let ratio=1;
+let dragging=false;
 
 let cambio;
 window.addEventListener('load', ()=>{
@@ -106,6 +115,7 @@ window.addEventListener('load', ()=>{
     });
     document.addEventListener('mouseup',e=>{
         premuto=false;
+        dragging=false;
     });
 
     cambio = ()=>{
@@ -137,6 +147,7 @@ window.addEventListener('load', ()=>{
                 canvas.removeEventListener('mousemove', listener)
             listener = e => {
                 if (!premuto) return;
+                dragging = true;
                 const deltax = e.x-oldx;
                 const deltay = e.y-oldy;
 
@@ -157,6 +168,17 @@ window.addEventListener('load', ()=>{
     }
 });
 
+//simula un click sul campo nascosto per caricare la foto
+function selectPhoto() {
+    if (dragging) return;
+    const fileInput = document.getElementById("fileInput");
+    fileInput.click();
+}
+
+function resetPhoto() {
+    document.getElementById('fileInput').value="";
+    document.getElementById('canvas').getContext('2d').drawImage(document.getElementById('defaultPic'),0,0);
+}
 </script>
 
 <template>
@@ -165,185 +187,185 @@ window.addEventListener('load', ()=>{
         <form id="form-signup">
             <span v-if="loggedUser.token">Sei già loggato, non serve registrarsi di nuovo!</span>
             <span v-if="!loggedUser.token">
-                <table id="image-section">
-                    <tr>
-                        <td rowspan="2">
-                            <img src="@/assets/profile-default.png" id='defaultPic' class="profile-picture" hidden />
-                            <canvas id="canvas" class="profile-picture"></canvas>
-                            <canvas id="canvas2" hidden></canvas>
-                            <img id="img" hidden>
-                        </td>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="text"
-                                    class="input100"
-                                    name="nome"
-                                    placeholder="Nome"
-                                    v-model="nome" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-user" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="text"
-                                    class="input100"
-                                    name="cognome"
-                                    placeholder="Cognome"
-                                    v-model="cognome" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-user" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td colspan="2">
-                            <div class="wrap-input100">
-                                <input
-                                    type="text"
-                                    class="input100"
-                                    name="email"
-                                    placeholder="Email"
-                                    v-model="email" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-envelope" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="password"
-                                    class="input100"
-                                    name="password"
-                                    placeholder="Password"
-                                    v-model="password" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="password"
-                                    class="input100"
-                                    name="password"
-                                    placeholder="Ripeti la password"
-                                    v-model="ripetiPassword" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-                <table>
-                    <tr>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="text"
-                                    class="input100"
-                                    name="indirizzo"
-                                    placeholder="Indirizzo"
-                                    v-model="indirizzo" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                        <td id="civico">
-                            <div class="wrap-input100">
-                                <input
-                                    type="text"
-                                    class="input100"
-                                    name="civico"
-                                    placeholder="N°"
-                                    v-model="civico" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="text"
-                                    class="input100"
-                                    name="citta"
-                                    placeholder="Città"
-                                    v-model="citta" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-city" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="wrap-input100">
-                                <input
-                                    type="tel"
-                                    class="input100"
-                                    name="telefono"
-                                    placeholder="Telefono"
-                                    v-model="telefono" />
-                                <span class="focus-input100"></span>
-                                <span class="symbol-input100">
-                                    <i class="fa-solid fa-phone" aria-hidden="true"></i>
-                                </span>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <div class="wrap-input100">
+                <span v-if="signupStatus.status"
+                    >Guarda la tua casella di posta e conferma la registrazione</span
+                >
+                <span v-if="!signupStatus.status">
+                    <table id="image-section">
+                        <tr>
+                            <td rowspan="2">
+                                <img src="@/assets/profile-default.png" id='defaultPic' class="profile-picture" hidden />
+                                <canvas id="canvas2" hidden></canvas>
+                                <img id="img" hidden>
+
+                                <canvas id="canvas" class="profile-picture" @mouseup="selectPhoto()"></canvas>
+                                    
                                 <input
                                     type="file"
                                     id="fileInput"
+                                    class="file-input"
                                     accept="image/png, image/jpeg"
-                                    @change="cambio"
-                                    class="input100"
-                                    name="file" />
-                                <span class="focus-input100"></span>
-                            </div>
-                        </td>
-                    </tr>
-                </table>
+                                    name="foto"
+                                    @change="cambio" />
+                            </td>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="text"
+                                        class="input100"
+                                        name="nome"
+                                        placeholder="Nome"
+                                        v-model="nome" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="text"
+                                        class="input100"
+                                        name="cognome"
+                                        placeholder="Cognome"
+                                        v-model="cognome" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-user" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2">
+                                <div class="wrap-input100">
+                                    <input
+                                        type="text"
+                                        class="input100"
+                                        name="email"
+                                        placeholder="Email"
+                                        v-model="email" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-envelope" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="password"
+                                        class="input100"
+                                        name="password"
+                                        placeholder="Password"
+                                        v-model="password" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="password"
+                                        class="input100"
+                                        name="password"
+                                        placeholder="Ripeti la password"
+                                        v-model="ripetiPassword" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                    <table>
+                        <tr>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="text"
+                                        class="input100"
+                                        name="indirizzo"
+                                        placeholder="Indirizzo"
+                                        v-model="indirizzo" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td id="civico">
+                                <div class="wrap-input100">
+                                    <input
+                                        type="text"
+                                        class="input100"
+                                        name="civico"
+                                        placeholder="N°"
+                                        v-model="civico" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-location-dot" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="text"
+                                        class="input100"
+                                        name="citta"
+                                        placeholder="Città"
+                                        v-model="citta" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-city" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <div class="wrap-input100">
+                                    <input
+                                        type="tel"
+                                        class="input100"
+                                        name="telefono"
+                                        placeholder="Telefono"
+                                        v-model="telefono" />
+                                    <span class="focus-input100"></span>
+                                    <span class="symbol-input100">
+                                        <i class="fa-solid fa-phone" aria-hidden="true"></i>
+                                    </span>
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
 
-                <div class="button-line">
-                    <button
-                        type="reset"
-                        class="form-button red animated rounded-corners-small"
-                        @click="null">
-                        <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
-                        <span>Annulla</span>
-                    </button>
-                    <button
-                        type="button"
-                        class="form-button green animated rounded-corners-small"
-                        @click="signup">
-                        <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
-                        <span>Registrati</span>
-                    </button>
-                </div>
+                    <div class="button-line">
+                        <button
+                            type="reset"
+                            class="form-button red animated rounded-corners-small"
+                            @click="resetPhoto()">
+                            <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
+                            <span>Annulla</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="form-button green animated rounded-corners-small"
+                            @click="signup">
+                            <i class="fa-solid fa-right-to-bracket" aria-hidden="true"></i>
+                            <span>Registrati</span>
+                        </button>
+                    </div>
+                </span>
             </span>
         </form>
     </main>
@@ -357,7 +379,15 @@ window.addEventListener('load', ()=>{
 
 #form-signup .profile-picture {
     width: 250px;
+    height: 250px;
     border-radius: 250px;
+    cursor: pointer;
+
+    transition: opacity 0.5s ease;
+}
+
+#form-signup .profile-picture:hover {
+    opacity: 0.6;
 }
 
 #form-signup table {
@@ -370,6 +400,10 @@ window.addEventListener('load', ()=>{
 
 #form-signup table td {
     padding: 0px 20px;
+}
+
+#form-signup .file-input {
+    display: none;
 }
 
 #form-signup #civico {
