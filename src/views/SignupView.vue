@@ -3,9 +3,97 @@ import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 import { reactive } from "vue";
 
+let x,y;
+let oldx,oldy,premuto;
+let listener;
+let ratio=1;
+let dragging=false;
+
+let cambio;
+
 onMounted(() => {
     //TODO potrei controllare se l'utente è loggato, e in tal caso mandarlo al profilo
     console.log("registrazione mounted");
+
+    const defaultImage = document.getElementById('defaultPic');
+    const canvas = document.getElementById('canvas');
+    canvas.setAttribute('width', defaultImage.width);
+    canvas.setAttribute('height', defaultImage.height)
+    canvas.getContext('2d').drawImage(defaultImage,0,0)
+
+    const context = canvas.getContext("2d");	
+
+    ['mousedown','touchstart'].forEach(eventName=>{
+        canvas.addEventListener(eventName,e=>{
+            premuto=true;
+            oldx = e.x || e.changedTouches[0].clientX;
+            oldy = e.y || e.changedTouches[0].clientY;
+        });
+    });
+
+    ['mouseup','touchend'].forEach(eventName=>{
+        document.addEventListener(eventName,e=>{
+            premuto=false;
+            dragging=false;
+        });
+    });
+
+    cambio = ()=>{
+        const input = document.getElementById('fileInput')
+        const file = input.files[0];
+        if (!file)
+            return;
+        const url = URL.createObjectURL(file);
+        const img = document.getElementById("img");
+        img.onload=()=>{
+            if (img.width<img.height)
+                ratio = canvas.height/img.width;
+            else
+                ratio = canvas.height/img.height;
+
+            const newWidth = img.width*ratio
+            const newHeight = img.height*ratio;
+            
+            const minWidth = canvas.width-newWidth;
+            const minHeight = canvas.height-newHeight;
+				
+            x = minWidth/2;
+            y = minHeight/2;
+
+            context.clearRect(0,0,canvas.width,canvas.height);
+            context.drawImage(img, x, y, newWidth,newHeight);
+
+            if (listener)
+                ['mousemove','touchmove'].forEach(eventName=>{
+                    canvas.removeEventListener(eventName, listener)
+                });
+            listener = e => {
+                e.preventDefault();
+                if (!premuto) return;
+                dragging = true;
+
+                const ex = e.x || e.changedTouches[0].clientX;
+                const ey = e.y || e.changedTouches[0].clientY;
+
+                const deltax = ex-oldx;
+                const deltay = ey-oldy;
+
+                x = Math.min(0, Math.max(minWidth, x+deltax));
+                y = Math.min(0, Math.max(minHeight, y+deltay));
+
+                context.clearRect(0,0,canvas.width,canvas.height);
+                context.drawImage(img, x,y, newWidth,newHeight);
+
+                oldx=ex;
+                oldy=ey;
+            }
+
+            ['mousemove','touchmove'].forEach(eventName=>{
+                canvas.addEventListener(eventName, listener);
+            });
+        }
+        img.setAttribute('src', url);
+    }
 });
 
 let signupStatus = reactive({
@@ -91,95 +179,6 @@ function signup() {
     }
 }
 
-
-let x,y;
-let oldx,oldy,premuto;
-let listener;
-let ratio=1;
-let dragging=false;
-
-let cambio;
-window.addEventListener('load', ()=>{
-    const defaultImage = document.getElementById('defaultPic');
-    const canvas = document.getElementById('canvas');
-    canvas.setAttribute('width', defaultImage.width);
-    canvas.setAttribute('height', defaultImage.height)
-    canvas.getContext('2d').drawImage(defaultImage,0,0)
-
-    const context = canvas.getContext("2d");	
-
-    ['mousedown','touchstart'].forEach(eventName=>{
-        canvas.addEventListener(eventName,e=>{
-            premuto=true;
-            oldx = e.x || e.changedTouches[0].clientX;
-            oldy = e.y || e.changedTouches[0].clientY;
-        });
-    });
-
-    ['mouseup','touchend'].forEach(eventName=>{
-        document.addEventListener(eventName,e=>{
-            premuto=false;
-            dragging=false;
-        });
-    });
-
-    cambio = ()=>{
-        const input = document.getElementById('fileInput')
-        const file = input.files[0];
-        if (!file)
-            return;
-        const url = URL.createObjectURL(file);
-        const img = document.getElementById("img");
-        img.onload=()=>{
-            if (img.width<img.height)
-                ratio = canvas.height/img.width;
-            else
-                ratio = canvas.height/img.height;
-
-            const newWidth = img.width*ratio
-            const newHeight = img.height*ratio;
-            
-            const minWidth = canvas.width-newWidth;
-            const minHeight = canvas.height-newHeight;
-				
-            x = minWidth/2;
-            y = minHeight/2;
-
-            context.clearRect(0,0,canvas.width,canvas.height);
-            context.drawImage(img, x, y, newWidth,newHeight);
-
-            if (listener)
-                ['mousemove','touchmove'].forEach(eventName=>{
-                    canvas.removeEventListener(eventName, listener)
-                });
-            listener = e => {
-                e.preventDefault();
-                if (!premuto) return;
-                dragging = true;
-
-                const ex = e.x || e.changedTouches[0].clientX;
-                const ey = e.y || e.changedTouches[0].clientY;
-
-                const deltax = ex-oldx;
-                const deltay = ey-oldy;
-
-                x = Math.min(0, Math.max(minWidth, x+deltax));
-                y = Math.min(0, Math.max(minHeight, y+deltay));
-
-                context.clearRect(0,0,canvas.width,canvas.height);
-                context.drawImage(img, x,y, newWidth,newHeight);
-
-                oldx=ex;
-                oldy=ey;
-            }
-
-            ['mousemove','touchmove'].forEach(eventName=>{
-                canvas.addEventListener(eventName, listener);
-            });
-        }
-        img.setAttribute('src', url);
-    }
-});
 
 //simula un click sul campo nascosto per caricare la foto
 function selectPhoto() {
