@@ -16,12 +16,13 @@ onMounted(() => {
     console.log("registrazione mounted");
 
     const defaultImage = document.getElementById('defaultPic');
-    const canvas = document.getElementById('canvas');
-    canvas.setAttribute('width', defaultImage.width);
-    canvas.setAttribute('height', defaultImage.height)
-    canvas.getContext('2d').drawImage(defaultImage,0,0)
-
-    const context = canvas.getContext("2d");	
+    defaultImage.onload=()=>{
+        const canvas = document.getElementById('canvas');
+        canvas.setAttribute('width', defaultImage.width);
+        canvas.setAttribute('height', defaultImage.height);
+        canvas.getContext("2d").drawImage(defaultImage,0,0);
+    };
+    var context = canvas.getContext("2d");
 
     ['mousedown','touchstart'].forEach(eventName=>{
         canvas.addEventListener(eventName,e=>{
