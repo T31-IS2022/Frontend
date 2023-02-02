@@ -108,14 +108,19 @@ window.addEventListener('load', ()=>{
 
     const context = canvas.getContext("2d");	
 
-    canvas.addEventListener('mousedown',e=>{
-        premuto=true;
-        oldx = e.x;
-        oldy = e.y;
+    ['mousedown','touchstart'].forEach(eventName=>{
+        canvas.addEventListener(eventName,e=>{
+            premuto=true;
+            oldx = e.x || e.changedTouches[0].clientX;
+            oldy = e.y || e.changedTouches[0].clientY;
+        });
     });
-    document.addEventListener('mouseup',e=>{
-        premuto=false;
-        dragging=false;
+
+    ['mouseup','touchend'].forEach(eventName=>{
+        document.addEventListener(eventName,e=>{
+            premuto=false;
+            dragging=false;
+        });
     });
 
     cambio = ()=>{
@@ -144,12 +149,19 @@ window.addEventListener('load', ()=>{
             context.drawImage(img, x, y, newWidth,newHeight);
 
             if (listener)
-                canvas.removeEventListener('mousemove', listener)
+                ['mousemove','touchmove'].forEach(eventName=>{
+                    canvas.removeEventListener(eventName, listener)
+                });
             listener = e => {
+                e.preventDefault();
                 if (!premuto) return;
                 dragging = true;
-                const deltax = e.x-oldx;
-                const deltay = e.y-oldy;
+
+                const ex = e.x || e.changedTouches[0].clientX;
+                const ey = e.y || e.changedTouches[0].clientY;
+
+                const deltax = ex-oldx;
+                const deltay = ey-oldy;
 
                 x = Math.min(0, Math.max(minWidth, x+deltax));
                 y = Math.min(0, Math.max(minHeight, y+deltay));
@@ -157,12 +169,13 @@ window.addEventListener('load', ()=>{
                 context.clearRect(0,0,canvas.width,canvas.height);
                 context.drawImage(img, x,y, newWidth,newHeight);
 
-                oldx=e.x;
-                oldy=e.y;
-
-                e.preventDefault();
+                oldx=ex;
+                oldy=ey;
             }
-            canvas.addEventListener('mousemove', listener);
+
+            ['mousemove','touchmove'].forEach(eventName=>{
+                canvas.addEventListener(eventName, listener);
+            });
         }
         img.setAttribute('src', url);
     }
@@ -177,6 +190,7 @@ function selectPhoto() {
 
 function resetPhoto() {
     document.getElementById('fileInput').value="";
+    document.getElementById('img').setAttribute('src', document.getElementById('defaultPic').getAttribute('src'));
     document.getElementById('canvas').getContext('2d').drawImage(document.getElementById('defaultPic'),0,0);
 }
 </script>
