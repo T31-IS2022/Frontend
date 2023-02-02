@@ -43,14 +43,25 @@ function signup() {
         signupData.append("indirizzo", indirizzoCompleto);
         signupData.append("telefono", telefono.value);
 
-        const foto = document.getElementById('fileInput')
-        signupData.append("foto", foto.files[0]);
+        const canvas = document.getElementById('canvas2');
+        const img = document.getElementById('img');
 
-        fetch(API_USER_URL + "/registrazione", {
-            method: "POST",
-            body: signupData,
-        }).then((resp) =>
-            resp
+        canvas.setAttribute('width', Math.min(img.width, img.height));
+        canvas.setAttribute('height', Math.min(img.width, img.height));
+
+        const context = canvas.getContext('2d');
+        context.clearRect(0,0,canvas.width, canvas.height);
+        context.drawImage(img, x/ratio,y/ratio)
+
+        canvas.toBlob(blob=>{
+            if (document.getElementById('fileInput').files[0])  
+                signupData.append("foto", new File([blob],'profilePicture.png'));
+
+            fetch(API_USER_URL + "/registrazione", {
+                method: "POST",
+                body: signupData,
+            }).then((resp) =>
+                resp
                 .json()
                 .then(function (data) {
                     console.log(resp);
@@ -67,9 +78,85 @@ function signup() {
                     return;
                 })
                 .catch((error) => console.error(error))
-        );
+            );
+        });
     }
 }
+
+
+let x,y;
+let oldx,oldy,premuto;
+let listener;
+let ratio=1;
+
+let cambio;
+window.addEventListener('load', ()=>{
+    const defaultImage = document.getElementById('defaultPic');
+    const canvas = document.getElementById('canvas');
+    canvas.setAttribute('width', defaultImage.width);
+    canvas.setAttribute('height', defaultImage.height)
+    canvas.getContext('2d').drawImage(defaultImage,0,0)
+
+    const context = canvas.getContext("2d");	
+
+    canvas.addEventListener('mousedown',e=>{
+        premuto=true;
+        oldx = e.x;
+        oldy = e.y;
+    });
+    document.addEventListener('mouseup',e=>{
+        premuto=false;
+    });
+
+    cambio = ()=>{
+        const input = document.getElementById('fileInput')
+        const file = input.files[0];
+        if (!file)
+            return;
+        const url = URL.createObjectURL(file);
+        const img = document.getElementById("img");
+        img.onload=()=>{
+            if (img.width<img.height)
+                ratio = canvas.height/img.width;
+            else
+                ratio = canvas.height/img.height;
+
+            const newWidth = img.width*ratio
+            const newHeight = img.height*ratio;
+            
+            const minWidth = canvas.width-newWidth;
+            const minHeight = canvas.height-newHeight;
+				
+            x = minWidth/2;
+            y = minHeight/2;
+
+            context.clearRect(0,0,canvas.width,canvas.height);
+            context.drawImage(img, x, y, newWidth,newHeight);
+
+            if (listener)
+                canvas.removeEventListener('mousemove', listener)
+            listener = e => {
+                if (!premuto) return;
+                const deltax = e.x-oldx;
+                const deltay = e.y-oldy;
+
+                x = Math.min(0, Math.max(minWidth, x+deltax));
+                y = Math.min(0, Math.max(minHeight, y+deltay));
+
+                context.clearRect(0,0,canvas.width,canvas.height);
+                context.drawImage(img, x,y, newWidth,newHeight);
+
+                oldx=e.x;
+                oldy=e.y;
+
+                e.preventDefault();
+            }
+            canvas.addEventListener('mousemove', listener);
+        }
+        img.setAttribute('src', url);
+    }
+});
+
 </script>
 
 <template>
@@ -81,7 +168,10 @@ function signup() {
                 <table id="image-section">
                     <tr>
                         <td rowspan="2">
-                            <img src="@/assets/profile-default.png" class="profile-picture" />
+                            <img src="@/assets/profile-default.png" id='defaultPic' class="profile-picture" hidden />
+                            <canvas id="canvas" class="profile-picture"></canvas>
+                            <canvas id="canvas2" hidden></canvas>
+                            <img id="img" hidden>
                         </td>
                         <td>
                             <div class="wrap-input100">
@@ -228,7 +318,8 @@ function signup() {
                                 <input
                                     type="file"
                                     id="fileInput"
-                                    accept="image/png, image/jpg"
+                                    accept="image/png, image/jpeg"
+                                    @change="cambio"
                                     class="input100"
                                     name="file" />
                                 <span class="focus-input100"></span>
