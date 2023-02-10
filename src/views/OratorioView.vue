@@ -3,16 +3,25 @@ import { ref } from 'vue';
 import CardSpazio from '../components/CardSpazio.vue';
 
 const spazi = ref([]);
-const max = 10;
-const pagina = ref(0);
+const fetchSize = 10;
 
 const HOST = import.meta.env.VITE_BACKEND;
 
+const checkFondoPagina = ()=>{
+    const corpo = document.getElementById('page-scroll');
+    return corpo.scrollHeight-corpo.scrollTop-corpo.clientHeight<150;
+}
+
+let fetching = false;
 const getSpazi = ()=>{
-    fetch(`${HOST}/spazio/?start=${pagina.value*max}&count=${max}`)
+    fetching = true;
+    fetch(`${HOST}/spazio/?start=${spazi.value.length}&count=${fetchSize}`)
     .then(res=>res.json())
     .then(data=>{
-        spazi.value = data;
+        spazi.value.push(...data);
+        fetching = false;    
+        if (data.length>0 && checkFondoPagina())
+            getSpazi();
     })
     .catch(error=>{
         console.log(error)
@@ -20,17 +29,17 @@ const getSpazi = ()=>{
 }
 getSpazi();
 
-const avanti = ()=>{
-    pagina.value++;
-    getSpazi()
-};
-const indietro = ()=>{
-    pagina.value--;
-    getSpazi()
-};
+let fondo = false;
+document.getElementById('page-scroll').addEventListener('scroll',e=>{
+    let newFondo = checkFondoPagina();
+    if (!fondo && newFondo)
+        if (!fetching)
+            getSpazi();
+
+    fondo = newFondo;
+});
 
 </script>
-
 
 <template>
     <main>
@@ -38,13 +47,6 @@ const indietro = ()=>{
         <!-- TODO aggiungere contenuti della home -->
         <div v-for="spazio in spazi" v-bind:key="spazio._id">
             <CardSpazio :spazio="spazio"></CardSpazio>
-        </div>
-
-        <!--bottoni di navigazione-->
-        <div v-if="pagina>0 || spazi.length==max">
-            <button id="indietro" v-if="pagina>0" @click="indietro">«{{ pagina }}</button>
-            <p>{{ pagina+1 }}</p>
-            <button id="avanti" v-if="spazi.length<=max" @click="avanti">{{ pagina+2 }}»</button>
         </div>
     </main>
 </template>

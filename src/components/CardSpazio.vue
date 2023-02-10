@@ -26,9 +26,9 @@ const urlFoto = import.meta.env.VITE_BACKEND+spazio.URLfoto;
 
         <div v-if="spazio.servizi.length>0">
             <h3>servizi</h3>
-            <li v-for="servizio in spazio.servizi" v-bind:key="servizio._id">
+            <div v-for="servizio in spazio.servizi" v-bind:key="servizio._id">
                 <CardServizio :servizio="servizio"></CardServizio>
-            </li>
+            </div>
         </div>
     </fieldset>
 
