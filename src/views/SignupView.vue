@@ -212,6 +212,18 @@ function resetPhoto() {
                             <h1>Grazie!</h1>
                             <br />
                             <p>Ti abbiamo inviato un'email per confermare la tua registrazione.</p>
+                            <a
+                                href="https://mail.google.com"
+                                target="_blank"
+                                class="email-link rounded-corners-small"
+                                ><img src="@/assets/gmail-logo.png" alt="Apri gmail"
+                            /></a>
+                            <a
+                                href="https://outlook.live.com"
+                                target="_blank"
+                                class="email-link rounded-corners-small"
+                                ><img src="@/assets/outlook-logo.png" alt="Apri outlook"
+                            /></a>
                         </span>
 
                         <img
@@ -457,6 +469,25 @@ function resetPhoto() {
     display: flex;
     justify-content: space-around;
     align-items: center;
+}
+
+#email-success .email-link {
+    cursor: pointer;
+    display: inline-block;
+    margin: 20px;
+    background: #ffffff;
+    padding: 0px 10px;
+
+    transition: background 0.5s ease;
+}
+
+#email-success .email-link:hover {
+    background: #ffffffb2;
+}
+
+#email-success .email-link img {
+    height: 40px;
+    margin: 0px;
 }
 
 #email-success img {
