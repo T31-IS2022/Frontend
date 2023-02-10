@@ -122,6 +122,7 @@ const telefono = ref("");
 function signup() {
     if (password.value != ripetiPassword.value) {
         //TODO mostrare un errore
+        console.err("Password diverse!");
     } else {
         let indirizzoCompleto = "";
         if (indirizzo.value && civico.value && citta.value) {
@@ -205,9 +206,20 @@ function resetPhoto() {
         <form id="form-signup">
             <span v-if="loggedUser.token">Sei già loggato, non serve registrarsi di nuovo!</span>
             <span v-if="!loggedUser.token">
-                <span v-if="signupStatus.status"
-                    >Guarda la tua casella di posta e conferma la registrazione</span
-                >
+                <span v-if="signupStatus.status">
+                    <div id="email-success">
+                        <span>
+                            <h1>Grazie!</h1>
+                            <br />
+                            <p>Ti abbiamo inviato un'email per confermare la tua registrazione.</p>
+                        </span>
+
+                        <img
+                            src="@/assets/email-success.gif"
+                            id="email-gif"
+                            class="rounded-corners" />
+                    </div>
+                </span>
                 <span v-if="!signupStatus.status">
                     <table id="image-section">
                         <tr>
@@ -439,5 +451,17 @@ function resetPhoto() {
     margin-top: 30px;
     display: flex;
     justify-content: space-around;
+}
+
+#email-success {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+#email-success img {
+    padding: 0px;
+    margin: 20px;
+    max-width: 400px;
 }
 </style>
