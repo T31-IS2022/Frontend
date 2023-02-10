@@ -101,7 +101,7 @@ let signupStatus = reactive({
     status: false,
 });
 
-const HOST = `http://localhost:3000`;
+const HOST = import.meta.env.VITE_BACKEND;
 const API_USER_URL = HOST + `/utente`;
 
 //variabili in che contengono il valore dei campi del form di registrazione
