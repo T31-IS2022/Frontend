@@ -14,7 +14,7 @@ const loggedUser = reactive({
 function setLoggedUser(data) {
     loggedUser.token ??= data.token;
     loggedUser.email = data.email;
-    loggedUser.id = data.id;
+    loggedUser.id = data._id;
     loggedUser.nome = data.nome;
     loggedUser.cognome = data.cognome;
     loggedUser.URLfoto = data.URLfoto;
