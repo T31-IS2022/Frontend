@@ -8,6 +8,8 @@ const loggedUser = reactive({
     id: undefined,
     nome: undefined,
     cognome: undefined,
+    indirizzo: undefined,
+    telefono: undefined,
     URLfoto: undefined,
 });
 
@@ -17,6 +19,8 @@ function setLoggedUser(data) {
     loggedUser.id = data._id;
     loggedUser.nome = data.nome;
     loggedUser.cognome = data.cognome;
+    loggedUser.indirizzo = data.indirizzo;
+    loggedUser.telefono = data.telefono;
     loggedUser.URLfoto = data.URLfoto;
 }
 
@@ -26,6 +30,8 @@ function clearLoggedUser() {
     loggedUser.id = undefined;
     loggedUser.nome = undefined;
     loggedUser.cognome = undefined;
+    loggedUser.indirizzo = undefined;
+    loggedUser.telefono = undefined;
     loggedUser.URLfoto = undefined;
 }
 

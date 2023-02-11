@@ -3,6 +3,100 @@ import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 import { reactive } from "vue";
 
+let x, y;
+let oldx, oldy, premuto;
+let listener;
+let ratio = 1;
+let dragging = false;
+
+let cambio;
+
+onMounted(() => {
+    //TODO potrei controllare se l'utente non è loggato, e in tal caso mandarlo alla registrazione
+    console.log("profilo mounted");
+
+    const defaultImage = document.getElementById("defaultPic");
+    defaultImage.onload = () => {
+        const canvas = document.getElementById("canvas");
+        canvas.setAttribute("width", defaultImage.width);
+        canvas.setAttribute("height", defaultImage.height);
+        canvas.getContext("2d").drawImage(defaultImage, 0, 0);
+    };
+    var context = canvas.getContext("2d");
+
+    ["mousedown", "touchstart"].forEach((eventName) => {
+        canvas.addEventListener(eventName, (e) => {
+            premuto = true;
+            oldx = e.x || e.changedTouches[0].clientX;
+            oldy = e.y || e.changedTouches[0].clientY;
+        });
+    });
+
+    ["mouseup", "touchend"].forEach((eventName) => {
+        document.addEventListener(eventName, (e) => {
+            premuto = false;
+            dragging = false;
+        });
+    });
+
+    cambio = () => {
+        const input = document.getElementById("fileInput");
+        const file = input.files[0];
+        if (!file) {
+            resetPhoto();
+            return;
+        }
+        const url = URL.createObjectURL(file);
+        const img = document.getElementById("img");
+        img.onload = () => {
+            if (img.width < img.height) ratio = canvas.height / img.width;
+            else ratio = canvas.height / img.height;
+
+            const newWidth = img.width * ratio;
+            const newHeight = img.height * ratio;
+
+            const minWidth = canvas.width - newWidth;
+            const minHeight = canvas.height - newHeight;
+
+            x = minWidth / 2;
+            y = minHeight / 2;
+
+            context.clearRect(0, 0, canvas.width, canvas.height);
+            context.drawImage(img, x, y, newWidth, newHeight);
+
+            if (listener)
+                ["mousemove", "touchmove"].forEach((eventName) => {
+                    canvas.removeEventListener(eventName, listener);
+                });
+            listener = (e) => {
+                e.preventDefault();
+                if (!premuto) return;
+                dragging = true;
+
+                const ex = e.x || e.changedTouches[0].clientX;
+                const ey = e.y || e.changedTouches[0].clientY;
+
+                const deltax = ex - oldx;
+                const deltay = ey - oldy;
+
+                x = Math.min(0, Math.max(minWidth, x + deltax));
+                y = Math.min(0, Math.max(minHeight, y + deltay));
+
+                context.clearRect(0, 0, canvas.width, canvas.height);
+                context.drawImage(img, x, y, newWidth, newHeight);
+
+                oldx = ex;
+                oldy = ey;
+            };
+
+            ["mousemove", "touchmove"].forEach((eventName) => {
+                canvas.addEventListener(eventName, listener);
+            });
+        };
+        img.setAttribute("src", url);
+    };
+});
+
 let editingStatus = reactive({
     status: false,
 });
@@ -16,17 +110,122 @@ const cognome = ref(loggedUser.cognome);
 const email = ref(loggedUser.email);
 const password = ref("");
 const ripetiPassword = ref("");
-const indirizzo = ref("");
-const telefono = ref("");
+const indirizzo = ref(loggedUser.indirizzo);
+const telefono = ref(loggedUser.telefono);
 
 function edit(status) {
     editingStatus.status = status;
 }
 
 function resetEditing() {
-    //rimettere nei campi i valori originali
-
     editingStatus.status = false;
+
+    //rimettere nei campi i valori originali
+    nome.value = loggedUser.nome;
+    cognome.value = loggedUser.cognome;
+    email.value = loggedUser.email;
+    password.value = "";
+    ripetiPassword.value = "";
+    indirizzo.value = loggedUser.indirizzo;
+    telefono.value = loggedUser.telefono;
+
+    resetPhoto();
+}
+
+function saveProfile() {
+    if ((password.value || ripetiPassword.value) && password.value != ripetiPassword.value) {
+        //TODO mostrare un errore
+        console.err("Password diverse!");
+    } else {
+        //inserisco i valori come campi di un form
+        const profileData = new FormData();
+        profileData.append("nome", nome.value);
+        profileData.append("cognome", cognome.value);
+        profileData.append("email", email.value);
+        if (password.value) {
+            profileData.append("password", password.value);
+        } else {
+            //TODO decidere cosa fare quando l'utente non cambia la password (risubmittarla (andrebbe memorizzata plain) oppure non submittarla (cambiare il backend))
+            profileData.append("password", "placeholder");
+        }
+
+        profileData.append("indirizzo", indirizzo.value);
+        profileData.append("telefono", telefono.value);
+
+        // prende l'immagine originale e la ritaglia in base a come e stata posizionata nel canvas dall'utente
+        // questo viene fatto passando per un altro canvas hidden
+        const canvas = document.getElementById("canvas2");
+        const img = document.getElementById("img");
+
+        canvas.setAttribute("width", Math.min(img.width, img.height));
+        canvas.setAttribute("height", Math.min(img.width, img.height));
+
+        const context = canvas.getContext("2d");
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.drawImage(img, x / ratio, y / ratio);
+
+        canvas.toBlob((blob) => {
+            //TODO decidere cosa fare quando l'immagine non viene cambiata
+            if (document.getElementById("fileInput").files[0])
+                profileData.append("foto", new File([blob], "profilePicture.png"));
+
+            //prelievo del token
+            const tokenHeader = new Headers();
+
+            tokenHeader.append("x-access-token", loggedUser.token);
+
+            fetch(API_USER_URL + "/" + loggedUser.id, {
+                method: "PATCH",
+                headers: tokenHeader,
+                body: profileData,
+            }).then((resp) =>
+                resp
+                    .json()
+                    .then(function (data) {
+                        console.log(resp);
+                        console.log(data);
+
+                        if (!resp.ok) {
+                            //TODO mostrare un errore
+                            console.error(data.message);
+                        } else {
+                            console.log(data);
+                            //TODO mostrare un popup di conferma delle modifiche
+
+                            //chiusura della modifica del form
+                            editingStatus.status = false;
+
+                            //aggiornamento dei dati salvati localmente
+                            getUserData(email.value); //TODO non funziona perchè il token del frontend non è più valido
+                        }
+
+                        return;
+                    })
+                    .catch((error) => console.error(error))
+            );
+        });
+    }
+
+    function getUserData(email) {
+        console.log(loggedUser.token);
+
+        const tokenHeader = new Headers();
+
+        tokenHeader.append("x-access-token", loggedUser.token);
+
+        fetch(API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email }), {
+            headers: tokenHeader,
+        }).then((resp) =>
+            resp.json().then(function (data) {
+                if (!resp.ok) {
+                    console.error(data.message);
+                } else {
+                    console.log(data);
+                    setLoggedUser(data);
+                }
+            })
+        );
+    }
 }
 
 function deleteProfile() {
@@ -59,6 +258,27 @@ function deleteProfile() {
             .catch((error) => console.error(error))
     ); // If there is any error you will catch them here
 }
+
+//simula un click sul campo nascosto per caricare la foto
+function selectPhoto() {
+    //permetto la modifica della foto solo se è stata attivata la modifica del profilo
+    if (editingStatus.status) {
+        if (dragging) return;
+        const fileInput = document.getElementById("fileInput");
+        fileInput.click();
+    }
+}
+
+function resetPhoto() {
+    document.getElementById("fileInput").value = "";
+    document
+        .getElementById("img")
+        .setAttribute("src", document.getElementById("defaultPic").getAttribute("src"));
+    document
+        .getElementById("canvas")
+        .getContext("2d")
+        .drawImage(document.getElementById("defaultPic"), 0, 0);
+}
 </script>
 
 <template>
@@ -70,8 +290,9 @@ function deleteProfile() {
                 <table id="image-section">
                     <tr>
                         <td rowspan="2">
+                            <!-- al posto della foto di default metto la foto dell'utente -->
                             <img
-                                src="@/assets/profile-default.png"
+                                :src="HOST + loggedUser.URLfoto"
                                 id="defaultPic"
                                 class="profile-picture"
                                 hidden />
@@ -81,6 +302,7 @@ function deleteProfile() {
                             <canvas
                                 id="canvas"
                                 class="profile-picture"
+                                v-bind:class="editingStatus.status ? '' : 'disabled'"
                                 @mouseup="selectPhoto()"></canvas>
 
                             <input
@@ -220,14 +442,13 @@ function deleteProfile() {
                             v-if="!editingStatus.status"
                             @click="edit(true)">
                             <i class="fa-solid fa-user-pen" aria-hidden="true"></i>
-                            <span>Modifica</span>
+                            <span>Modifica dati</span>
                         </button>
                         <button
                             type="reset"
                             class="form-button red animated rounded-corners-small"
                             v-if="editingStatus.status"
                             @click="resetEditing()">
-                            <!--resetPhoto()-->
                             <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                             <span>Annulla</span>
                         </button>
@@ -235,7 +456,7 @@ function deleteProfile() {
                             type="button"
                             class="form-button green animated rounded-corners-small"
                             v-if="editingStatus.status"
-                            @click="edit(false)">
+                            @click="saveProfile()">
                             <i class="fa-solid fa-floppy-disk" aria-hidden="true"></i>
                             <span>Salva</span>
                         </button>
@@ -265,13 +486,13 @@ function deleteProfile() {
     width: 250px;
     height: 250px;
     border-radius: 250px;
-    cursor: pointer;
 
     transition: opacity 0.5s ease;
 }
 
-#form-profile .profile-picture:hover {
+#form-profile .profile-picture:not(.disabled):hover {
     opacity: 0.6;
+    cursor: pointer;
 }
 
 #form-profile table {
