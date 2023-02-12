@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import Login from "@/components/Login.vue";
+import PopupMessaggi from "@/components/PopupMessaggi.vue";
 
 function changeGradient(nextActive) {
     let active = document.getElementById(nextActive);
@@ -97,6 +98,8 @@ function toggleDarkMode() {
             </div>
         </div>
     </div>
+
+    <PopupMessaggi />
 </template>
 
 <style scoped>
