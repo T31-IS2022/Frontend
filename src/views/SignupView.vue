@@ -54,25 +54,24 @@ async function signup() {
             body: signupData,
         }).then((resp) =>
             resp
-            .json()
-            .then(function (data) {
-                console.log(resp);
-                console.log(data);
-
-                if (!resp.ok) {
-                    console.error(data.message);
-                } else {
+                .json()
+                .then(function (data) {
+                    console.log(resp);
                     console.log(data);
-                    //TODO dire all'utente di guardare la sua casella di posta
-                    signupStatus.status = true;
-                }
 
-                //emit("login", loggedUser);
-                return;
-            })
-            .catch((error) => console.error(error))
+                    if (!resp.ok) {
+                        console.error(data.message);
+                    } else {
+                        console.log(data);
+
+                        signupStatus.status = true;
+                    }
+
+                    //emit("login", loggedUser);
+                    return;
+                })
+                .catch((error) => console.error(error))
         );
-
     }
 }
 
@@ -288,19 +287,6 @@ function resetPhoto() {
     margin: 0 auto;
 }
 
-#form-signup .profile-picture {
-    width: 250px;
-    height: 250px;
-    border-radius: 250px;
-    cursor: pointer;
-
-    transition: opacity 0.5s ease;
-}
-
-#form-signup .profile-picture:hover {
-    opacity: 0.6;
-}
-
 #form-signup table {
     width: 100%;
 }
@@ -311,10 +297,6 @@ function resetPhoto() {
 
 #form-signup table td {
     padding: 0px 20px;
-}
-
-#form-signup .file-input {
-    display: none;
 }
 
 #form-signup #civico {

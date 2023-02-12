@@ -2,99 +2,14 @@
 import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 import { reactive } from "vue";
-
-let x, y;
-let oldx, oldy, premuto;
-let listener;
-let ratio = 1;
-let dragging = false;
-
-let cambio;
+import InputFoto from "../components/inputFoto.vue";
 
 onMounted(() => {
     //TODO potrei controllare se l'utente non è loggato, e in tal caso mandarlo alla registrazione
     console.log("profilo mounted");
-
-    const defaultImage = document.getElementById("defaultPic");
-    defaultImage.onload = () => {
-        const canvas = document.getElementById("canvas");
-        canvas.setAttribute("width", defaultImage.width);
-        canvas.setAttribute("height", defaultImage.height);
-        canvas.getContext("2d").drawImage(defaultImage, 0, 0);
-    };
-    var context = canvas.getContext("2d");
-
-    ["mousedown", "touchstart"].forEach((eventName) => {
-        canvas.addEventListener(eventName, (e) => {
-            premuto = true;
-            oldx = e.x || e.changedTouches[0].clientX;
-            oldy = e.y || e.changedTouches[0].clientY;
-        });
-    });
-
-    ["mouseup", "touchend"].forEach((eventName) => {
-        document.addEventListener(eventName, (e) => {
-            premuto = false;
-            dragging = false;
-        });
-    });
-
-    cambio = () => {
-        const input = document.getElementById("fileInput");
-        const file = input.files[0];
-        if (!file) {
-            resetPhoto();
-            return;
-        }
-        const url = URL.createObjectURL(file);
-        const img = document.getElementById("img");
-        img.onload = () => {
-            if (img.width < img.height) ratio = canvas.height / img.width;
-            else ratio = canvas.height / img.height;
-
-            const newWidth = img.width * ratio;
-            const newHeight = img.height * ratio;
-
-            const minWidth = canvas.width - newWidth;
-            const minHeight = canvas.height - newHeight;
-
-            x = minWidth / 2;
-            y = minHeight / 2;
-
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.drawImage(img, x, y, newWidth, newHeight);
-
-            if (listener)
-                ["mousemove", "touchmove"].forEach((eventName) => {
-                    canvas.removeEventListener(eventName, listener);
-                });
-            listener = (e) => {
-                e.preventDefault();
-                if (!premuto) return;
-                dragging = true;
-
-                const ex = e.x || e.changedTouches[0].clientX;
-                const ey = e.y || e.changedTouches[0].clientY;
-
-                const deltax = ex - oldx;
-                const deltay = ey - oldy;
-
-                x = Math.min(0, Math.max(minWidth, x + deltax));
-                y = Math.min(0, Math.max(minHeight, y + deltay));
-
-                context.clearRect(0, 0, canvas.width, canvas.height);
-                context.drawImage(img, x, y, newWidth, newHeight);
-
-                oldx = ex;
-                oldy = ey;
-            };
-
-            ["mousemove", "touchmove"].forEach((eventName) => {
-                canvas.addEventListener(eventName, listener);
-            });
-        };
-        img.setAttribute("src", url);
-    };
+    inputFoto.value.disable();
+    console.log(HOST + loggedUser.URLfoto);
+    inputFoto.value.setPhoto(HOST + loggedUser.URLfoto);
 });
 
 let editingStatus = reactive({
@@ -112,9 +27,15 @@ const password = ref("");
 const ripetiPassword = ref("");
 const indirizzo = ref(loggedUser.indirizzo);
 const telefono = ref(loggedUser.telefono);
+const inputFoto = ref(null);
 
 function edit(status) {
     editingStatus.status = status;
+    if (status) {
+        inputFoto.value.enable();
+    } else {
+        inputFoto.value.disable();
+    }
 }
 
 function resetEditing() {
@@ -129,10 +50,11 @@ function resetEditing() {
     indirizzo.value = loggedUser.indirizzo;
     telefono.value = loggedUser.telefono;
 
-    resetPhoto();
+    inputFoto.value.disable();
+    inputFoto.value.setPhoto(HOST + loggedUser.URLfoto);
 }
 
-function saveProfile() {
+async function saveProfile() {
     if ((password.value || ripetiPassword.value) && password.value != ripetiPassword.value) {
         //TODO mostrare un errore
         console.err("Password diverse!");
@@ -152,80 +74,67 @@ function saveProfile() {
         profileData.append("indirizzo", indirizzo.value);
         profileData.append("telefono", telefono.value);
 
-        // prende l'immagine originale e la ritaglia in base a come e stata posizionata nel canvas dall'utente
-        // questo viene fatto passando per un altro canvas hidden
-        const canvas = document.getElementById("canvas2");
-        const img = document.getElementById("img");
+        const file = await inputFoto.value.getFile();
+        profileData.append("foto", file);
 
-        canvas.setAttribute("width", Math.min(img.width, img.height));
-        canvas.setAttribute("height", Math.min(img.width, img.height));
-
-        const context = canvas.getContext("2d");
-        context.clearRect(0, 0, canvas.width, canvas.height);
-        context.drawImage(img, x / ratio, y / ratio);
-
-        canvas.toBlob((blob) => {
-            //TODO decidere cosa fare quando l'immagine non viene cambiata
-            if (document.getElementById("fileInput").files[0])
-                profileData.append("foto", new File([blob], "profilePicture.png"));
-
-            //prelievo del token
-            const tokenHeader = new Headers();
-
-            tokenHeader.append("x-access-token", loggedUser.token);
-
-            fetch(API_USER_URL + "/" + loggedUser.id, {
-                method: "PATCH",
-                headers: tokenHeader,
-                body: profileData,
-            }).then((resp) =>
-                resp
-                    .json()
-                    .then(function (data) {
-                        console.log(resp);
-                        console.log(data);
-
-                        if (!resp.ok) {
-                            //TODO mostrare un errore
-                            console.error(data.message);
-                        } else {
-                            console.log(data);
-                            //TODO mostrare un popup di conferma delle modifiche
-
-                            //chiusura della modifica del form
-                            editingStatus.status = false;
-
-                            //aggiornamento dei dati salvati localmente
-                            getUserData(email.value); //TODO non funziona perchè il token del frontend non è più valido
-                        }
-
-                        return;
-                    })
-                    .catch((error) => console.error(error))
-            );
-        });
-    }
-
-    function getUserData(email) {
-        console.log(loggedUser.token);
-
+        //prelievo del token
         const tokenHeader = new Headers();
 
         tokenHeader.append("x-access-token", loggedUser.token);
 
-        fetch(API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email }), {
+        fetch(API_USER_URL + "/" + loggedUser.id, {
+            method: "PATCH",
             headers: tokenHeader,
+            body: profileData,
         }).then((resp) =>
-            resp.json().then(function (data) {
-                if (!resp.ok) {
-                    console.error(data.message);
-                } else {
+            resp
+                .json()
+                .then(function (data) {
+                    console.log(resp);
                     console.log(data);
-                    setLoggedUser(data);
-                }
-            })
+
+                    if (!resp.ok) {
+                        //TODO mostrare un errore
+                        console.error(data.message);
+                    } else {
+                        console.log(data);
+                        //TODO mostrare un popup di conferma delle modifiche
+
+                        //chiusura della modifica del form
+                        edit(false);
+
+                        loggedUser.token = data.token;
+
+                        //aggiornamento dei dati salvati localmente
+                        getUserData(email.value);
+                    }
+
+                    return;
+                })
+                .catch((error) => console.error(error))
         );
     }
+}
+
+function getUserData(email) {
+    console.log(loggedUser.token);
+
+    const tokenHeader = new Headers();
+
+    tokenHeader.append("x-access-token", loggedUser.token);
+
+    fetch(API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email }), {
+        headers: tokenHeader,
+    }).then((resp) =>
+        resp.json().then(function (data) {
+            if (!resp.ok) {
+                console.error(data.message);
+            } else {
+                console.log(data);
+                setLoggedUser(data);
+            }
+        })
+    );
 }
 
 function deleteProfile() {
@@ -258,27 +167,6 @@ function deleteProfile() {
             .catch((error) => console.error(error))
     ); // If there is any error you will catch them here
 }
-
-//simula un click sul campo nascosto per caricare la foto
-function selectPhoto() {
-    //permetto la modifica della foto solo se è stata attivata la modifica del profilo
-    if (editingStatus.status) {
-        if (dragging) return;
-        const fileInput = document.getElementById("fileInput");
-        fileInput.click();
-    }
-}
-
-function resetPhoto() {
-    document.getElementById("fileInput").value = "";
-    document
-        .getElementById("img")
-        .setAttribute("src", document.getElementById("defaultPic").getAttribute("src"));
-    document
-        .getElementById("canvas")
-        .getContext("2d")
-        .drawImage(document.getElementById("defaultPic"), 0, 0);
-}
 </script>
 
 <template>
@@ -291,27 +179,7 @@ function resetPhoto() {
                     <tr>
                         <td rowspan="2">
                             <!-- al posto della foto di default metto la foto dell'utente -->
-                            <img
-                                :src="HOST + loggedUser.URLfoto"
-                                id="defaultPic"
-                                class="profile-picture"
-                                hidden />
-                            <canvas id="canvas2" hidden></canvas>
-                            <img id="img" hidden />
-
-                            <canvas
-                                id="canvas"
-                                class="profile-picture"
-                                v-bind:class="editingStatus.status ? '' : 'disabled'"
-                                @mouseup="selectPhoto()"></canvas>
-
-                            <input
-                                type="file"
-                                id="fileInput"
-                                class="file-input"
-                                accept="image/png, image/jpeg"
-                                name="foto"
-                                @change="cambio" />
+                            <InputFoto ref="inputFoto"></InputFoto>
                         </td>
                         <td>
                             <div class="wrap-input100">
