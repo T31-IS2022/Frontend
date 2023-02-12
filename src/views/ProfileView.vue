@@ -9,7 +9,6 @@ onMounted(() => {
     console.log("profilo mounted");
     inputFoto.value.disable();
     console.log(HOST + loggedUser.URLfoto);
-    inputFoto.value.setPhoto(HOST + loggedUser.URLfoto);
 });
 
 let editingStatus = reactive({
@@ -51,7 +50,7 @@ function resetEditing() {
     telefono.value = loggedUser.telefono;
 
     inputFoto.value.disable();
-    inputFoto.value.setPhoto(HOST + loggedUser.URLfoto);
+    inputFoto.value.resetPhoto();
 }
 
 async function saveProfile() {
@@ -64,12 +63,8 @@ async function saveProfile() {
         profileData.append("nome", nome.value);
         profileData.append("cognome", cognome.value);
         profileData.append("email", email.value);
-        if (password.value) {
+        if (password.value) 
             profileData.append("password", password.value);
-        } else {
-            //TODO decidere cosa fare quando l'utente non cambia la password (risubmittarla (andrebbe memorizzata plain) oppure non submittarla (cambiare il backend))
-            profileData.append("password", "placeholder");
-        }
 
         profileData.append("indirizzo", indirizzo.value);
         profileData.append("telefono", telefono.value);
@@ -167,6 +162,9 @@ function deleteProfile() {
             .catch((error) => console.error(error))
     ); // If there is any error you will catch them here
 }
+    const deletePhoto = ()=>{
+        inputFoto.value.deletePhoto();
+    }
 </script>
 
 <template>
@@ -179,7 +177,9 @@ function deleteProfile() {
                     <tr>
                         <td rowspan="2">
                             <!-- al posto della foto di default metto la foto dell'utente -->
-                            <InputFoto ref="inputFoto"></InputFoto>
+                            <InputFoto :default-photo-u-r-l="loggedUser.URLfoto" ref="inputFoto"></InputFoto>
+                            <button v-if="editingStatus.status" type="button"
+                            @click="deletePhoto">DELETE PHOTO</button>
                         </td>
                         <td>
                             <div class="wrap-input100">

@@ -1,9 +1,16 @@
 <script setup>
 import { reactive } from "vue";
 
+const HOST = import.meta.env.VITE_BACKEND;
+
 let active = reactive({
     status: true,
 });
+
+const props = defineProps({
+    defaultPhotoURL: String
+});
+const defaultPhotoURL = props.defaultPhotoURL?`${HOST}${props.defaultPhotoURL}`:`./src/assets/profile-default.png`;
 
 //simula un click sul campo nascosto per caricare la foto
 function selectPhoto() {
@@ -19,6 +26,8 @@ let oldx, oldy, premuto;
 let listener;
 let ratio = 1;
 let dragging = false;
+
+let wantsToDelete = false;
 
 const imageLoaded = () => {
     const defaultImage = document.getElementById("defaultPic");
@@ -51,7 +60,7 @@ const cambio = () => {
     }
     const url = URL.createObjectURL(file);
     const img = document.getElementById("img");
-    img.onload = () => {
+    img.addEventListener('load', () => {
         if (img.width < img.height) ratio = canvas.height / img.width;
         else ratio = canvas.height / img.height;
 
@@ -95,51 +104,23 @@ const cambio = () => {
         ["mousemove", "touchmove"].forEach((eventName) => {
             canvas.addEventListener(eventName, listener);
         });
-    };
+    },{once:true});
     img.setAttribute("src", url);
+    wantsToDelete = false;
 };
-
-//modifica il file nel campo di input e poi chiama cambio per disegnare l'immagine nella canvas
-function setPhoto(url) {
-    getImgURL(url, (imgBlob) => {
-        // Load img blob to input
-        // WIP: UTF8 character error
-        let fileName = "profilePicture.png";
-        let file = new File(
-            [imgBlob],
-            fileName,
-            { type: "image/png", lastModified: new Date().getTime() },
-            "utf-8"
-        );
-        let container = new DataTransfer();
-        container.items.add(file);
-        document.querySelector("#fileInput").files = container.files;
-
-        cambio();
-    });
-}
-// xmlHTTP return blob respond
-function getImgURL(url, callback) {
-    var xhr = new XMLHttpRequest();
-    xhr.onload = function () {
-        callback(xhr.response);
-    };
-    xhr.open("GET", url);
-    xhr.responseType = "blob";
-    xhr.send();
-}
 
 function resetPhoto() {
     document.getElementById("fileInput").value = "";
     document
         .getElementById("img")
-        .setAttribute("src", document.getElementById("defaultPic").getAttribute("src"));
+        .setAttribute("src", defaultPhotoURL);
     document
         .getElementById("canvas")
         .getContext("2d")
         .drawImage(document.getElementById("defaultPic"), 0, 0);
 }
 async function getFile() {
+    if (wantsToDelete) return new File([''], "defaultPicture.png");
     if (!document.getElementById("fileInput").files[0]) return;
 
     // prende l'immagine originale e la ritaglia in base a come e stata posizionata nel canvas dall'utente
@@ -175,8 +156,21 @@ function disable() {
     active.status = false;
 }
 
+function deletePhoto(){
+    wantsToDelete = true;
+    const img = document.getElementById("img");
+    document.getElementById('fileInput').value="";
+    img.addEventListener('load',()=>{
+        const canvas = document.getElementById("canvas");
+        canvas.setAttribute("width", img.width);
+        canvas.setAttribute("height", img.height);
+        canvas.getContext("2d").drawImage(img, 0, 0);
+    }, {once: true});
+    img.setAttribute('src', './src/assets/profile-default.png')
+}
+
 defineExpose({
-    setPhoto,
+    deletePhoto,
     resetPhoto,
     getFile,
     enable,
@@ -186,7 +180,7 @@ defineExpose({
 
 <template>
     <img
-        src="@/assets/profile-default.png"
+        :src= defaultPhotoURL
         id="defaultPic"
         class="profile-picture"
         @load="imageLoaded"
