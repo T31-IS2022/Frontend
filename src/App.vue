@@ -1,4 +1,5 @@
 <script setup>
+import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import Login from "@/components/Login.vue";
 import PopupMessaggi from "@/components/PopupMessaggi.vue";
@@ -27,6 +28,21 @@ function toggleDarkMode() {
     }
 
     darkModeActive = !darkModeActive;
+}
+
+//popup per i messaggi
+const popupMessaggi = ref(null);
+
+function fun1() {
+    popupMessaggi.value.errore("Errore", "Questo è un popup di errore");
+}
+
+function fun2() {
+    popupMessaggi.value.info("Info", "Questo è un popup di info");
+}
+
+function fun3() {
+    popupMessaggi.value.conferma("Conferma", "Questo è un popup di conferma");
 }
 </script>
 
@@ -88,7 +104,7 @@ function toggleDarkMode() {
                 <h2>Lorem ipsum</h2>
                 <p>Lorem ipsum dolor sit amet</p>
                 <!-- componente che visualizza la vista selezionata nella navbar -->
-                <RouterView />
+                <RouterView @errore="fun1" @info="fun2" @successo="fun3" />
             </div>
         </div>
 
@@ -99,7 +115,7 @@ function toggleDarkMode() {
         </div>
     </div>
 
-    <PopupMessaggi />
+    <PopupMessaggi ref="popupMessaggi" />
 </template>
 
 <style scoped>

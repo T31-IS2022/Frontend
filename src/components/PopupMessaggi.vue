@@ -1,11 +1,10 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, createVNode, render } from "vue";
+import Popup from "../components/Popup.vue";
 
-onMounted(() => {
-    let popup = document.getElementById("popup-login");
+onMounted(() => {});
 
-    document.body.appendChild(popup);
-});
+let messaggi = ref([]);
 
 function fadeOut(event) {
     console.log(event.target.parentElement);
@@ -19,102 +18,47 @@ function fadeOut(event) {
 
 const HOST = `http://localhost:3000`;
 const API_USER_URL = HOST + `/utente`;
+
+function errore(titolo, descrizione) {
+    let messaggio = {
+        popupType: "error",
+        title: titolo,
+        description: descrizione,
+    };
+
+    messaggi.value.push(messaggio);
+}
+
+function info(titolo, descrizione) {
+    let messaggio = {
+        popupType: "info",
+        title: titolo,
+        description: descrizione,
+    };
+
+    messaggi.value.push(messaggio);
+}
+
+function conferma(titolo, descrizione) {
+    let messaggio = {
+        popupType: "confirm",
+        title: titolo,
+        description: descrizione,
+    };
+
+    messaggi.value.push(messaggio);
+}
+
+defineExpose({
+    errore,
+    info,
+    conferma,
+});
 </script>
 
 <template>
     <div id="messages-container">
-        <div class="message-popup error acrylic rounded-corners">
-            <button type="button" class="button-remove" @click="fadeOut($event)">
-                <i class="fa-solid fa-xmark fa-lg" aria-hidden="true"></i>
-            </button>
-            <table>
-                <tr>
-                    <td class="logo">
-                        <i class="fa-solid fa-circle-exclamation fa-3x" aria-hidden="true"></i>
-                    </td>
-                    <td>
-                        <span class="title">Errore</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="description">
-                            Qui va il messaggio di errore lorem ipsum dolor sit amet bla bsdfa fa
-                            aff a faasf as aae f g qegerg eg egeg eg eg eg eg sadada
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="message-popup info acrylic rounded-corners">
-            <button type="button" class="button-remove" @click="fadeOut($event)">
-                <i class="fa-solid fa-xmark fa-lg" aria-hidden="true"></i>
-            </button>
-            <table>
-                <tr>
-                    <td class="logo">
-                        <i class="fa-solid fa-circle-info fa-3x" aria-hidden="true"></i>
-                    </td>
-                    <td>
-                        <span class="title">Info</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="description">
-                            Qui va il messaggio di errore lorem ipsum dolor sit amet bla bsdfa fa
-                            aff a faasf as aae f g qegerg eg egeg eg eg eg eg sadada
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="message-popup confirm acrylic rounded-corners">
-            <button type="button" class="button-remove" @click="fadeOut($event)">
-                <i class="fa-solid fa-xmark fa-lg" aria-hidden="true"></i>
-            </button>
-            <table>
-                <tr>
-                    <td class="logo">
-                        <i class="fa-solid fa-circle-check fa-3x" aria-hidden="true"></i>
-                    </td>
-                    <td>
-                        <span class="title">Confermato</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="description">
-                            Qui va il messaggio di errore lorem ipsum dolor sit amet bla bsdfa fa
-                            aff a faasf as aae f g qegerg eg egeg eg eg eg eg sadada
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </div>
-        <div class="message-popup confirm acrylic rounded-corners">
-            <button type="button" class="button-remove" @click="fadeOut($event)">
-                <i class="fa-solid fa-xmark fa-lg" aria-hidden="true"></i>
-            </button>
-            <table>
-                <tr>
-                    <td class="logo">
-                        <i class="fa-solid fa-circle-check fa-3x" aria-hidden="true"></i>
-                    </td>
-                    <td>
-                        <span class="title">Confermato</span>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="2">
-                        <span class="description">
-                            Qui va il messaggio di errore lorem ipsum dolor sit amet bla bsdfa fa
-                            aff a faasf as aae f g qegerg eg egeg eg eg eg eg sadada
-                        </span>
-                    </td>
-                </tr>
-            </table>
-        </div>
+        <Popup v-for="messaggio in messaggi" v-bind:key="messaggio" :messaggio="messaggio" />
     </div>
 </template>
 
@@ -132,6 +76,7 @@ const API_USER_URL = HOST + `/utente`;
     display: flex;
     flex-direction: column;
     justify-content: flex-end;
+    align-items: flex-end;
 }
 
 #messages-wrapper {
@@ -177,56 +122,5 @@ const API_USER_URL = HOST + `/utente`;
 
     /* We don't repeat our mask images */
     mask-repeat: no-repeat;
-}
-
-.message-popup {
-    margin: 0px 20px 20px 0px;
-
-    transition: opacity 0.7s ease;
-}
-
-.message-popup .button-remove {
-    position: fixed;
-    right: 20px;
-    border: none;
-    background: none;
-}
-
-.message-popup .button-remove i {
-    color: black;
-    cursor: pointer;
-}
-
-.message-popup span.title {
-    font-weight: bold;
-    font-size: 20px;
-    text-transform: uppercase;
-
-    display: inline-block;
-    padding: 0px 20px;
-}
-
-.message-popup .logo {
-    width: 10%;
-}
-
-.message-popup.error .logo i,
-.message-popup.error span.title {
-    color: rgb(255, 0, 0);
-}
-
-.message-popup.info .logo i,
-.message-popup.info span.title {
-    color: rgb(30, 144, 255);
-}
-
-.message-popup.confirm .logo i,
-.message-popup.confirm span.title {
-    color: rgb(53, 154, 1);
-}
-
-.message-popup span.description {
-    display: inline-block;
-    padding: 20px 0px 0px 0px;
 }
 </style>
