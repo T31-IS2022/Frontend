@@ -6,9 +6,6 @@ onMounted(() => {});
 
 let messaggi = ref([]);
 
-const HOST = `http://localhost:3000`;
-const API_USER_URL = HOST + `/utente`;
-
 function errore(titolo, descrizione) {
     let messaggio = {
         popupType: "error",

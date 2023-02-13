@@ -1,4 +1,6 @@
-<script setup></script>
+<script setup>
+const emit = defineEmits(["errore", "info", "successo"]);
+</script>
 
 <template>
     <main>
@@ -8,5 +10,5 @@
 </template>
 
 <style>
-    /* TODO aggiungere il CSS della home */
+/* TODO aggiungere il CSS della home */
 </style>

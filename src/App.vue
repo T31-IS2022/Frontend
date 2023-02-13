@@ -91,7 +91,7 @@ function fun3(titolo, descrizione) {
             </button>
             -->
             <!-- componente per eseguire il login -->
-            <Login />
+            <Login @errore="fun1" @info="fun2" @successo="fun3" />
         </nav>
         <button id="dark-toggle" class="acrylic" @click="toggleDarkMode()">
             <i class="fa-solid fa-moon"></i>

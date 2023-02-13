@@ -2,6 +2,16 @@
 import { ref, onMounted } from "vue";
 
 onMounted(() => {
+    if (props.messaggio.popupType == "error") {
+        console.error(
+            "ERRORE - " + props.messaggio.title + ":\n" + (props.messaggio.description || "")
+        );
+    } else {
+        console.log(
+            "MESSAGGIO - " + props.messaggio.title + ":\n" + (props.messaggio.description || "")
+        );
+    }
+
     const showTime = 6000;
 
     setTimeout(function () {
@@ -95,7 +105,7 @@ function hidePopup(event) {
     text-transform: uppercase;
 
     display: inline-block;
-    padding: 0px 20px;
+    padding: 0px 40px 0px 20px;
 }
 
 .message-popup .logo {

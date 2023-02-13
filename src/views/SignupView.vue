@@ -4,6 +4,8 @@ import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser
 import { reactive } from "vue";
 import InputFoto from "../components/inputFoto.vue";
 
+const emit = defineEmits(["errore", "info", "successo"]);
+
 let signupStatus = reactive({
     status: false,
 });
@@ -29,8 +31,7 @@ const inputFoto = ref(null);
 
 async function signup() {
     if (password.value != ripetiPassword.value) {
-        //TODO mostrare un errore
-        console.err("Password diverse!");
+        emit("errore", "Errore", "Le password sono diverse.");
     } else {
         let indirizzoCompleto = "";
         if (indirizzo.value && civico.value && citta.value) {
@@ -52,26 +53,33 @@ async function signup() {
         fetch(API_USER_URL + "/registrazione", {
             method: "POST",
             body: signupData,
-        }).then((resp) =>
-            resp
-                .json()
-                .then(function (data) {
-                    console.log(resp);
-                    console.log(data);
+        })
+            .then((resp) =>
+                resp
+                    .json()
+                    .then(function (data) {
+                        if (!resp.ok) {
+                            emit(
+                                "errore",
+                                "Errore",
+                                "Impossibile inviare i dati al database.\nErrore: " + data.message
+                            );
+                        } else {
+                            console.log(data);
 
-                    if (!resp.ok) {
-                        console.error(data.message);
-                    } else {
-                        console.log(data);
+                            signupStatus.status = true;
+                        }
 
-                        signupStatus.status = true;
-                    }
-
-                    //emit("login", loggedUser);
-                    return;
-                })
-                .catch((error) => console.error(error))
-        );
+                        //emit("login", loggedUser);
+                        return;
+                    })
+                    .catch((error) => {
+                        emit("errore", "Errore", "Errore imprevisto: " + error);
+                    })
+            )
+            .catch((error) => {
+                emit("errore", "Errore", "Errore imprevisto: " + error);
+            });
     }
 }
 

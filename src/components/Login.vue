@@ -2,6 +2,8 @@
 import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 
+const emit = defineEmits(["login", "errore", "info", "successo"]);
+
 onMounted(() => {
     let popup = document.getElementById("popup-login");
 
@@ -15,10 +17,6 @@ const API_USER_URL = HOST + `/utente`;
 const email = ref("");
 const password = ref("");
 
-// const loggedUser = ref({})
-// const loggedUser = defineProps(['loggedUser'])
-const emit = defineEmits(["login"]);
-
 function login() {
     //chiudo il popup
     togglePopupLogin();
@@ -31,33 +29,36 @@ function login() {
     fetch(API_USER_URL + "/login", {
         method: "POST",
         body: loginData,
-    }).then((resp) =>
-        resp
-            .json()
-            .then(function (data) {
-                console.log(resp);
-                console.log(data);
+    })
+        .then((resp) =>
+            resp
+                .json()
+                .then(function (data) {
+                    if (!resp.ok) {
+                        emit(
+                            "errore",
+                            "Errore",
+                            "Impossibile eseguire l'accesso.\nErrore: " + data.message
+                        );
+                    } else {
+                        // recupero le informazioni su questo utente
+                        setLoggedUser(data);
 
-                if (!resp.ok) {
-                    console.error(data.message);
-                } else {
-                    // recupero le informazioni su questo utente
-                    setLoggedUser(data);
+                        getUserData(email.value);
 
-                    getUserData(email.value);
+                        console.log(data);
+                    }
 
-                    console.log(data);
-                    // loggedUser.token = data.token;
-                    // loggedUser.email = data.email;
-                    // loggedUser.id = data.id;
-                    // loggedUser.self = data.self;
-                }
-
-                emit("login", loggedUser);
-                return;
-            })
-            .catch((error) => console.error(error))
-    ); // If there is any error you will catch them here
+                    emit("login", loggedUser);
+                    return;
+                })
+                .catch((error) => {
+                    emit("errore", "Errore", "Errore imprevisto: " + error);
+                })
+        )
+        .catch((error) => {
+            emit("errore", "Errore", "Errore imprevisto: " + error);
+        }); // If there is any error you will catch them here
 }
 
 function logout() {
@@ -76,16 +77,25 @@ function getUserData(email) {
 
     fetch(API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email }), {
         headers: tokenHeader,
-    }).then((resp) =>
-        resp.json().then(function (data) {
-            if (!resp.ok) {
-                console.error(data.message);
-            } else {
-                console.log(data);
-                setLoggedUser(data);
-            }
-        })
-    );
+    })
+        .then((resp) =>
+            resp.json().then(function (data) {
+                if (!resp.ok) {
+                    emit(
+                        "errore",
+                        "Errore",
+                        "Impossibile recuperare i dati dal database.\nErrore: " + data.message
+                    );
+                } else {
+                    console.log(data);
+                    setLoggedUser(data);
+                    emit("successo", "Bentornato!");
+                }
+            })
+        )
+        .catch((error) => {
+            emit("errore", "Errore", "Errore imprevisto: " + error);
+        });
 }
 
 let popupLoginVisible = false;

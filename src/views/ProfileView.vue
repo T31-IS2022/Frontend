@@ -5,6 +5,8 @@ import { reactive } from "vue";
 import InputFoto from "../components/inputFoto.vue";
 import router from "../router";
 
+const emit = defineEmits(["errore", "info", "successo"]);
+
 onMounted(() => {
     //se l'utente non è loggato faccio un redirect alla home
     if (!loggedUser.token) {
@@ -60,7 +62,7 @@ function resetEditing() {
 async function saveProfile() {
     if ((password.value || ripetiPassword.value) && password.value != ripetiPassword.value) {
         //TODO mostrare un errore
-        console.err("Password diverse!");
+        emit("errore", "Errore", "Le password sono diverse.");
     } else {
         //inserisco i valori come campi di un form
         const profileData = new FormData();
@@ -84,33 +86,41 @@ async function saveProfile() {
             method: "PATCH",
             headers: tokenHeader,
             body: profileData,
-        }).then((resp) =>
-            resp
-                .json()
-                .then(function (data) {
-                    console.log(resp);
-                    console.log(data);
+        })
+            .then((resp) =>
+                resp
+                    .json()
+                    .then(function (data) {
+                        if (!resp.ok) {
+                            emit(
+                                "errore",
+                                "Errore",
+                                "Impossibile recuperare i dati dal database.\nErrore: " +
+                                    data.message
+                            );
+                        } else {
+                            console.log(data);
+                            //TODO mostrare un popup di conferma delle modifiche
+                            emit("successo", "Dati salvati");
 
-                    if (!resp.ok) {
-                        //TODO mostrare un errore
-                        console.error(data.message);
-                    } else {
-                        console.log(data);
-                        //TODO mostrare un popup di conferma delle modifiche
+                            //chiusura della modifica del form
+                            edit(false);
 
-                        //chiusura della modifica del form
-                        edit(false);
+                            loggedUser.token = data.token;
 
-                        loggedUser.token = data.token;
+                            //aggiornamento dei dati salvati localmente
+                            getUserData(email.value);
+                        }
 
-                        //aggiornamento dei dati salvati localmente
-                        getUserData(email.value);
-                    }
-
-                    return;
-                })
-                .catch((error) => console.error(error))
-        );
+                        return;
+                    })
+                    .catch((error) => {
+                        emit("errore", "Errore", "Errore imprevisto: " + error);
+                    })
+            )
+            .catch((error) => {
+                emit("errore", "Errore", "Errore imprevisto: " + error);
+            });
     }
 }
 
@@ -123,16 +133,24 @@ function getUserData(email) {
 
     fetch(API_USER_URL + "/byEmail?" + new URLSearchParams({ email: email }), {
         headers: tokenHeader,
-    }).then((resp) =>
-        resp.json().then(function (data) {
-            if (!resp.ok) {
-                console.error(data.message);
-            } else {
-                console.log(data);
-                setLoggedUser(data);
-            }
-        })
-    );
+    })
+        .then((resp) =>
+            resp.json().then(function (data) {
+                if (!resp.ok) {
+                    emit(
+                        "errore",
+                        "Errore",
+                        "Impossibile recuperare i dati dal database.\nErrore: " + data.message
+                    );
+                } else {
+                    console.log(data);
+                    setLoggedUser(data);
+                }
+            })
+        )
+        .catch((error) => {
+            emit("errore", "Errore", "Errore imprevisto: " + error);
+        });
 }
 
 function deleteProfile() {
@@ -145,25 +163,38 @@ function deleteProfile() {
     fetch(API_USER_URL + "/" + loggedUser.id, {
         method: "DELETE",
         headers: tokenHeader,
-    }).then((resp) =>
-        resp
-            .json()
-            .then(function (data) {
-                console.log(resp);
+    })
+        .then((resp) =>
+            resp
+                .json()
+                .then(function (data) {
+                    console.log(resp);
 
-                if (!resp.ok) {
-                    console.error(data.message);
-                } else {
-                    //effettuare il logout
-                    clearLoggedUser();
+                    if (!resp.ok) {
+                        emit(
+                            "errore",
+                            "Errore",
+                            "Impossibile completare la cancellazione dell'utente.\nErrore: " +
+                                data.message
+                        );
+                    } else {
+                        //effettuare il logout
+                        clearLoggedUser();
 
-                    console.log(data);
-                }
+                        console.log(data);
+                        emit("successo", "Account eliminato", "Account eliminato correttamente.");
+                        router.replace("/");
+                    }
 
-                return;
-            })
-            .catch((error) => console.error(error))
-    ); // If there is any error you will catch them here
+                    return;
+                })
+                .catch((error) => {
+                    emit("errore", "Errore", "Errore imprevisto: " + error);
+                })
+        )
+        .catch((error) => {
+            emit("errore", "Errore", "Errore imprevisto: " + error);
+        });
 }
 const deletePhoto = () => {
     inputFoto.value.deletePhoto();
