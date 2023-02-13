@@ -3,12 +3,15 @@ import { ref, onMounted } from "vue";
 import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 import { reactive } from "vue";
 import InputFoto from "../components/inputFoto.vue";
+import router from "../router";
 
 onMounted(() => {
-    //TODO potrei controllare se l'utente non è loggato, e in tal caso mandarlo alla registrazione
-    console.log("profilo mounted");
-    inputFoto.value.disable();
-    console.log(HOST + loggedUser.URLfoto);
+    //se l'utente non è loggato faccio un redirect alla home
+    if (!loggedUser.token) {
+        router.replace("/");
+    } else {
+        inputFoto.value.disable();
+    }
 });
 
 let editingStatus = reactive({
@@ -24,8 +27,8 @@ const cognome = ref(loggedUser.cognome);
 const email = ref(loggedUser.email);
 const password = ref("");
 const ripetiPassword = ref("");
-const indirizzo = ref(loggedUser.indirizzo);
-const telefono = ref(loggedUser.telefono);
+const indirizzo = ref(loggedUser.indirizzo || "");
+const telefono = ref(loggedUser.telefono || "");
 const inputFoto = ref(null);
 
 function edit(status) {
@@ -63,8 +66,7 @@ async function saveProfile() {
         profileData.append("nome", nome.value);
         profileData.append("cognome", cognome.value);
         profileData.append("email", email.value);
-        if (password.value) 
-            profileData.append("password", password.value);
+        if (password.value) profileData.append("password", password.value);
 
         profileData.append("indirizzo", indirizzo.value);
         profileData.append("telefono", telefono.value);
@@ -162,9 +164,9 @@ function deleteProfile() {
             .catch((error) => console.error(error))
     ); // If there is any error you will catch them here
 }
-    const deletePhoto = ()=>{
-        inputFoto.value.deletePhoto();
-    }
+const deletePhoto = () => {
+    inputFoto.value.deletePhoto();
+};
 </script>
 
 <template>
@@ -177,9 +179,12 @@ function deleteProfile() {
                     <tr>
                         <td rowspan="2">
                             <!-- al posto della foto di default metto la foto dell'utente -->
-                            <InputFoto :default-photo-u-r-l="loggedUser.URLfoto" ref="inputFoto"></InputFoto>
-                            <button v-if="editingStatus.status" type="button"
-                            @click="deletePhoto">DELETE PHOTO</button>
+                            <InputFoto
+                                :default-photo-u-r-l="loggedUser.URLfoto"
+                                ref="inputFoto"></InputFoto>
+                            <button v-if="editingStatus.status" type="button" @click="deletePhoto">
+                                <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
+                            </button>
                         </td>
                         <td>
                             <div class="wrap-input100">
