@@ -1,14 +1,30 @@
 <script setup>
 const emit = defineEmits(["errore", "info", "successo"]);
+
+emit("successo");
 </script>
 
 <template>
     <main>
         <h2>Sei nella home</h2>
         <!-- TODO aggiungere contenuti della home -->
-        <button type="button" @click="emit('errore', 'ciao')">Lancia errore</button>
-        <button type="button" @click="emit('info', 'ciao')">Lancia info</button>
-        <button type="button" @click="emit('successo', 'ciao')">Lancia successo</button>
+        <button
+            type="button"
+            @click="emit('errore', 'Popup di errore', 'Hai appena creato un popup di errore!')">
+            Lancia errore
+        </button>
+        <button
+            type="button"
+            @click="emit('info', 'Popup di info', 'Hai appena creato un popup informativo!')">
+            Lancia info
+        </button>
+        <button
+            type="button"
+            @click="
+                emit('successo', 'Popup di conferma', 'Hai appena creato un popup di conferma!')
+            ">
+            Lancia successo
+        </button>
         <p>
             Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vivamus tristique pretium
             libero, nec porttitor dolor consequat at. Suspendisse gravida libero ac efficitur

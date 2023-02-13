@@ -1,20 +1,10 @@
 <script setup>
 import { ref, onMounted, createVNode, render } from "vue";
-import Popup from "../components/Popup.vue";
+import Popup from "./Popup.vue";
 
 onMounted(() => {});
 
 let messaggi = ref([]);
-
-function fadeOut(event) {
-    console.log(event.target.parentElement);
-
-    const target = event.target.parentElement.parentElement;
-
-    target.style.opacity = "0";
-    // If you want to remove it from the page after the fadeout
-    target.addEventListener("transitionend", () => target.remove());
-}
 
 const HOST = `http://localhost:3000`;
 const API_USER_URL = HOST + `/utente`;
@@ -22,31 +12,55 @@ const API_USER_URL = HOST + `/utente`;
 function errore(titolo, descrizione) {
     let messaggio = {
         popupType: "error",
-        title: titolo,
+        title: titolo || "Errore",
         description: descrizione,
     };
 
     messaggi.value.push(messaggio);
+
+    //dopo un bel po di tempo rimuovo il messaggio dall'array (per evitare buildup di elementi ormai nascosti)
+    setTimeout(function () {
+        var index = messaggi.value.indexOf(messaggio);
+        if (index !== -1) {
+            messaggi.value.splice(index, 1);
+        }
+    }, 10000);
 }
 
 function info(titolo, descrizione) {
     let messaggio = {
         popupType: "info",
-        title: titolo,
+        title: titolo || "Info",
         description: descrizione,
     };
 
     messaggi.value.push(messaggio);
+
+    //dopo un bel po di tempo rimuovo il messaggio dall'array (per evitare buildup di elementi ormai nascosti)
+    setTimeout(function () {
+        var index = messaggi.value.indexOf(messaggio);
+        if (index !== -1) {
+            messaggi.value.splice(index, 1);
+        }
+    }, 10000);
 }
 
 function conferma(titolo, descrizione) {
     let messaggio = {
         popupType: "confirm",
-        title: titolo,
+        title: titolo || "Conferma",
         description: descrizione,
     };
 
     messaggi.value.push(messaggio);
+
+    //dopo un bel po di tempo rimuovo il messaggio dall'array (per evitare buildup di elementi ormai nascosti)
+    setTimeout(function () {
+        var index = messaggi.value.indexOf(messaggio);
+        if (index !== -1) {
+            messaggi.value.splice(index, 1);
+        }
+    }, 10000);
 }
 
 defineExpose({

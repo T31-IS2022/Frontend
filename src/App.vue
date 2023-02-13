@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import Login from "@/components/Login.vue";
-import PopupMessaggi from "@/components/PopupMessaggi.vue";
+import GestorePopup from "@/components/GestorePopup.vue";
 
 function changeGradient(nextActive) {
     let active = document.getElementById(nextActive);
@@ -31,18 +31,18 @@ function toggleDarkMode() {
 }
 
 //popup per i messaggi
-const popupMessaggi = ref(null);
+const gestorePopup = ref(null);
 
-function fun1() {
-    popupMessaggi.value.errore("Errore", "Questo è un popup di errore");
+function fun1(titolo, descrizione) {
+    gestorePopup.value.errore(titolo, descrizione);
 }
 
-function fun2() {
-    popupMessaggi.value.info("Info", "Questo è un popup di info");
+function fun2(titolo, descrizione) {
+    gestorePopup.value.info(titolo, descrizione);
 }
 
-function fun3() {
-    popupMessaggi.value.conferma("Conferma", "Questo è un popup di conferma");
+function fun3(titolo, descrizione) {
+    gestorePopup.value.conferma(titolo, descrizione);
 }
 </script>
 
@@ -115,7 +115,7 @@ function fun3() {
         </div>
     </div>
 
-    <PopupMessaggi ref="popupMessaggi" />
+    <GestorePopup ref="gestorePopup" />
 </template>
 
 <style scoped>

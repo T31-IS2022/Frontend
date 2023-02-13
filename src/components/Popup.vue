@@ -1,13 +1,20 @@
 <script setup>
 import { ref, onMounted } from "vue";
 
-onMounted(() => {});
+onMounted(() => {
+    const showTime = 5000;
 
-const props = defineProps({
+    setTimeout(function () {
+        props.messaggio.hidden = true;
+    }, showTime);
+});
+
+let props = defineProps({
     messaggio: {
         popupType: String,
         title: String,
         description: String,
+        hidden: Boolean,
     },
 });
 
@@ -18,21 +25,21 @@ const logoType =
         ? "fa-circle-exclamation"
         : "fa-circle-info";
 
-function fadeOut(event) {
-    console.log(event.target.parentElement);
+function hidePopup(event) {
+    props.messaggio.hidden = true;
 
-    const target = event.target.parentElement.parentElement;
+    let target = event.target.parentElement.parentElement;
 
-    target.style.opacity = "0";
-    // If you want to remove it from the page after the fadeout
     target.addEventListener("transitionend", () => target.remove());
 }
 </script>
 
 <template>
-    <div class="message-popup acrylic rounded-corners" v-bind:class="messaggio.popupType">
+    <div
+        class="message-popup acrylic rounded-corners"
+        v-bind:class="[messaggio.popupType, messaggio.hidden ? 'fading' : '']">
         <!-- confirm, info, error -->
-        <button type="button" class="button-remove" @click="fadeOut($event)">
+        <button type="button" class="button-remove" @click="hidePopup($event)">
             <i class="fa-solid fa-xmark fa-lg" aria-hidden="true"></i>
         </button>
         <table>
@@ -45,7 +52,7 @@ function fadeOut(event) {
                     <span class="title">{{ messaggio.title }}</span>
                 </td>
             </tr>
-            <tr>
+            <tr v-if="messaggio.description">
                 <td colspan="2">
                     <span class="description">
                         {{ messaggio.description }}
@@ -62,6 +69,10 @@ function fadeOut(event) {
     margin: 0px 20px 20px 0px;
 
     transition: opacity 0.7s ease;
+}
+
+.message-popup.fading {
+    opacity: 0;
 }
 
 .message-popup .button-remove {
