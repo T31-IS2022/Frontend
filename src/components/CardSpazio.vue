@@ -1,35 +1,77 @@
 <script setup>
-import CardServizio from './CardServizio.vue';
+import CardServizio from "./CardServizio.vue";
 
-const props = defineProps(['spazio']);
+const props = defineProps(["spazio"]);
 const spazio = props.spazio;
 
-const urlFoto = import.meta.env.VITE_BACKEND+spazio.URLfoto;
-
+const urlFoto = import.meta.env.VITE_BACKEND + spazio.URLfoto;
 </script>
 
 <template>
-    <fieldset>
-        <legend>{{ spazio.nome }}</legend>
-        <table>
-            <tr>
-                <td>tipologia:</td>
-                <td>{{ spazio.tipologia }}</td>
-            </tr>
-            <tr>
-                <td>prezzo:</td>
-                <td>{{spazio.prezzoIniziale}} + {{ spazio.prezzoOra }}/ora</td>
-            </tr>
-        </table>
-        <p>{{ spazio.descrizione }}</p>
-        <img :src="urlFoto" :alt="spazio.nome" width="100" height="100">
+    <div class="rounded-corners card-spazio">
+        <h3>{{ spazio.nome }}</h3>
+        <div class="dynamic-flex">
+            <div class="info-spazio">
+                <p>{{ spazio.descrizione }}</p>
+                <br />
+                <ul>
+                    <li>Tipologia: {{ spazio.tipologia }}</li>
+                    <li>Prezzo iniziale: {{ spazio.prezzoIniziale }}€</li>
+                    <li>Prezzo all'ora: {{ spazio.prezzoOra }}€/ora</li>
+                </ul>
+            </div>
+            <img :src="urlFoto" :alt="spazio.nome" class="rounded-corners-small foto-spazio" />
+        </div>
 
-        <div v-if="spazio.servizi.length>0">
-            <h3>servizi</h3>
-            <div v-for="servizio in spazio.servizi" v-bind:key="servizio._id">
-                <CardServizio :servizio="servizio"></CardServizio>
+        <div v-if="spazio.servizi.length > 0" class="container-servizi">
+            <h4>Questo spazio dispone dei seguenti servizi:</h4>
+            <div>
+                <div v-for="servizio in spazio.servizi" v-bind:key="servizio._id">
+                    <CardServizio :servizio="servizio"></CardServizio>
+                </div>
             </div>
         </div>
-    </fieldset>
-
+    </div>
 </template>
+
+<style scoped>
+.card-spazio {
+    background: rgba(255, 255, 255, 0.5);
+    margin: 10px 30px 30px 30px;
+}
+
+.card-spazio .dynamic-flex {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.info-spazio {
+    list-style-position: inside;
+    padding: 10px 10px 0px 10px;
+}
+
+.foto-spazio {
+    height: 200px;
+}
+
+.container-servizi {
+    margin-top: 20px;
+}
+
+.container-servizi > div {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    align-content: center;
+}
+
+.container-servizi > div > * {
+    flex-grow: 1;
+    width: 50%;
+}
+</style>
