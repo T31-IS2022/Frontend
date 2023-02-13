@@ -8,7 +8,7 @@ onMounted(() => {
     document.body.appendChild(popup);
 });
 
-const HOST = `http://localhost:3000`;
+const HOST = import.meta.env.VITE_BACKEND;
 const API_USER_URL = HOST + `/utente`;
 
 //variabili in che contengono il valore dei campi del login
