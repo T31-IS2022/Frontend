@@ -10,6 +10,7 @@ onMounted(() => {
     if (!loggedUser.token) {
         router.replace("/");
     } else {
+        //TODO se l'utente logga dopo aver già montato il profilo, l'inputFoto rimane abilitato
         inputFoto.value.disable();
     }
 });
@@ -182,7 +183,11 @@ const deletePhoto = () => {
                             <InputFoto
                                 :default-photo-u-r-l="loggedUser.URLfoto"
                                 ref="inputFoto"></InputFoto>
-                            <button v-if="editingStatus.status" type="button" @click="deletePhoto">
+                            <button
+                                type="button"
+                                v-if="editingStatus.status"
+                                id="delete-photo"
+                                @click="deletePhoto">
                                 <i class="fa-solid fa-trash-can" aria-hidden="true"></i>
                             </button>
                         </td>
@@ -366,6 +371,28 @@ const deletePhoto = () => {
 #form-profile .profile-picture:not(.disabled):hover {
     opacity: 0.6;
     cursor: pointer;
+}
+
+#form-profile #delete-photo {
+    font-size: 16px;
+    color: #999999;
+    background: white;
+
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: none;
+
+    cursor: pointer;
+
+    position: fixed;
+    translate: -20px 20px;
+
+    transition: color 0.25s ease;
+}
+
+#form-profile #delete-photo:hover {
+    color: #666666;
 }
 
 #form-profile table {
