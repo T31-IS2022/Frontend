@@ -105,6 +105,8 @@ defineExpose({
     justify-content: flex-end;
 }
 
+/* classe per aggiungere un fade sui messaggi in alto parzialmente visibili
+NB: attivando questa classe si disattiva l'effetto traslucido dei popup */
 .masked-overflow {
     /* mask fade distance, for use in mask calculations */
     --mask-height: 32px;

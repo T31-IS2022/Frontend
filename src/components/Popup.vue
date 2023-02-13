@@ -2,7 +2,7 @@
 import { ref, onMounted } from "vue";
 
 onMounted(() => {
-    const showTime = 5000;
+    const showTime = 6000;
 
     setTimeout(function () {
         props.messaggio.hidden = true;
@@ -85,6 +85,8 @@ function hidePopup(event) {
 .message-popup .button-remove i {
     color: black;
     cursor: pointer;
+
+    padding: 10px;
 }
 
 .message-popup span.title {
@@ -117,6 +119,9 @@ function hidePopup(event) {
 
 .message-popup span.description {
     display: inline-block;
-    padding: 20px 0px 0px 0px;
+    margin: 20px 0px 0px 0px;
+
+    max-height: 15vh;
+    overflow: auto;
 }
 </style>

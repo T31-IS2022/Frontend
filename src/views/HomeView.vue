@@ -1,7 +1,5 @@
 <script setup>
 const emit = defineEmits(["errore", "info", "successo"]);
-
-emit("successo");
 </script>
 
 <template>
@@ -21,7 +19,11 @@ emit("successo");
         <button
             type="button"
             @click="
-                emit('successo', 'Popup di conferma', 'Hai appena creato un popup di conferma!')
+                emit(
+                    'successo',
+                    'Popup di conferma',
+                    'Hai appena creato un popup di conferma! Lorem ièsum dolor siwefaha bh fjohafb afohbb aohfbaof hadaos h baoh bah basd oadh badhsdh basd habd hsabd ashdb hsbdahsd dashd basb adkh absd ahdb akdhj badkh ab Lorem ièsum dolor siwefaha bh fjohafb afohbb aohfbaof hadaos h baoh bah basd oadh badhsdh basd habd hsabd ashdb hsbdahsd dashd basb adkh absd ahdb akdhj badkh ab Lorem ièsum dolor siwefaha bh fjohafb afohbb aohfbaof hadaos h baoh bah basd oadh badhsdh basd habd hsabd ashdb hsbdahsd dashd basb adkh absd ahdb akdhj badkh abLorem ièsum dolor siwefaha bh fjohafb afohbb aohfbaof hadaos h baoh bah basd oadh badhsdh basd habd hsabd ashdb hsbdahsd dashd basb adkh absd ahdb akdhj badkh ab'
+                )
             ">
             Lancia successo
         </button>
