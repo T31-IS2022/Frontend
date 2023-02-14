@@ -7,21 +7,21 @@ const urlFoto = import.meta.env.VITE_BACKEND + servizio.URLfoto;
 
 <template>
     <div class="rounded-corners-small card-servizio">
-        <h4>{{ servizio.nome }}</h4>
         <div class="dynamic-flex">
             <div class="info-servizio">
+                <h4>{{ servizio.nome }}</h4>
                 <ul>
                     <li>Tipologia: {{ servizio.tipologia }}</li>
                     <li>Prezzo iniziale: {{ servizio.prezzoIniziale }}€</li>
                     <li>Prezzo all'ora: {{ servizio.prezzoOra }}€/ora</li>
                 </ul>
-                <br />
-                <p>{{ servizio.descrizione }}</p>
             </div>
             <div class="foto-servizio">
                 <img :src="urlFoto" :alt="servizio.nome" class="rounded-corners-small" />
             </div>
         </div>
+
+        <p class="descrizione-servizio" v-if="servizio.descrizione">{{ servizio.descrizione }}</p>
     </div>
 </template>
 
@@ -36,23 +36,31 @@ const urlFoto = import.meta.env.VITE_BACKEND + servizio.URLfoto;
     display: flex;
     flex-direction: row;
     flex-wrap: wrap;
-    align-items: center;
+    align-items: flex-start;
     justify-content: space-between;
 }
 
 .info-servizio {
     list-style-position: inside;
-    padding: 10px 10px 0px 10px;
+}
+
+.info-servizio h4 {
+    margin-bottom: 10px;
 }
 
 .info-servizio ul {
     width: fit-content;
+    padding: 0px 20px;
 }
 
 .foto-servizio > img {
     max-width: 100px;
     max-height: 100px;
 
-    margin: 20px 0px 0px 30px;
+    margin: 0px 0px 0px 30px;
+}
+
+.descrizione-servizio {
+    margin: 10px 0px 0px 20px;
 }
 </style>
