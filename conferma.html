@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="it">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="icon" href="/favicon.ico" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Conferma registrazione</title>
+        <link
+            rel="stylesheet"
+            href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+        <link rel="stylesheet" href="../src/assets/main.css" />
+        <link rel="stylesheet" href="../src/assets/input.css" />
+
+        <style>
+            #app {
+                display: flex;
+                align-items: center;
+            }
+
+            #popup {
+                margin: 0 auto;
+                width: fit-content;
+                height: fit-content;
+                padding: 40px;
+            }
+
+            #success-section,
+            #error-section {
+                display: none;
+            }
+
+            button {
+                display: block;
+                margin: 20px auto 0px auto;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="app">
+            <div id="bg-orange" class="background bg-active"></div>
+            <div id="popup" class="acrylic rounded-corners">
+                <h2>Conferma registrazione</h2>
+                <br />
+                <div id="confirm-section">
+                    <div>Premi sul pulsante per confermare la tua registrazione</div>
+                    <button
+                        type="button"
+                        class="form-button green animated rounded-corners-small"
+                        onclick="confermaRegistrazione()">
+                        <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
+                        <span>Conferma la registrazione</span>
+                    </button>
+                </div>
+                <div id="success-section">
+                    <div>Registrazione confermata correttamente.</div>
+                    <a href="/">Vai alla home</a> ed esegui il login!
+                </div>
+                <div id="error-section">
+                    <div>Errore nella conferma della registrazione.</div>
+                    <p>Per ulteriori informazioni, contatta la segreteria.</p>
+                </div>
+            </div>
+        </div>
+    </body>
+    <script>
+        API_USER_URL = "http://localhost:3000/utente";
+
+        function confermaRegistrazione() {
+            let id = findGetParameter("id");
+            if (id) {
+                fetch(API_USER_URL + "/conferma?" + new URLSearchParams({ id: id }), {}).then(
+                    (resp) =>
+                        resp.json().then(function (data) {
+                            if (!resp.ok) {
+                                console.error(data.message);
+                                showError();
+                            } else {
+                                console.log(data);
+                                showSuccess();
+                            }
+                        })
+                );
+            } else {
+                console.error("Id mancante");
+            }
+        }
+
+        function findGetParameter(parameterName) {
+            var result = null,
+                tmp = [];
+            location.search
+                .substr(1)
+                .split("&")
+                .forEach(function (item) {
+                    tmp = item.split("=");
+                    if (tmp[0] === parameterName) result = decodeURIComponent(tmp[1]);
+                });
+            return result;
+        }
+
+        function showSuccess() {
+            document.getElementById("confirm-section").style.display = "none";
+            document.getElementById("success-section").style.display = "block";
+        }
+
+        function showError() {
+            document.getElementById("confirm-section").style.display = "none";
+            document.getElementById("error-section").style.display = "block";
+        }
+    </script>
+</html>
