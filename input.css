@@ -1,0 +1,188 @@
+/* stile campi di input */
+input,
+select {
+    border: none;
+    outline: none;
+}
+
+.wrap-input100 input:focus {
+    border-color: transparent !important;
+}
+
+input:focus::-webkit-input-placeholder {
+    color: transparent;
+}
+input:focus:-moz-placeholder {
+    color: transparent;
+}
+input:focus::-moz-placeholder {
+    color: transparent;
+}
+input:focus:-ms-input-placeholder {
+    color: transparent;
+}
+
+input::-webkit-input-placeholder {
+    color: #999999;
+}
+input:-moz-placeholder {
+    color: #999999;
+}
+input::-moz-placeholder {
+    color: #999999;
+}
+input:-ms-input-placeholder {
+    color: #999999;
+}
+
+.wrap-input100 {
+    position: relative;
+    width: 100%;
+    z-index: 1;
+    margin-bottom: 10px;
+}
+.input100 {
+    font-size: 18px;
+    line-height: 1.5;
+    color: #666666;
+
+    display: block;
+    width: 100%;
+    background: white;
+    height: 50px;
+    border-radius: 8px;
+    padding: 0 30px 0 68px;
+}
+.focus-input100 {
+    display: block;
+    position: absolute;
+    border-radius: 8px;
+    bottom: 0;
+    left: 0;
+    z-index: -1;
+    width: 100%;
+    height: 100%;
+    box-shadow: 0px 0px 0px 0px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.input100:focus + .focus-input100 {
+    -webkit-animation: anim-shadow 0.5s ease-in-out forwards;
+    animation: anim-shadow 0.5s ease-in-out forwards;
+}
+
+@-webkit-keyframes anim-shadow {
+    to {
+        box-shadow: 0px 0px 35px 12px;
+        opacity: 0;
+    }
+}
+
+@keyframes anim-shadow {
+    to {
+        box-shadow: 0px 0px 35px 12px;
+        opacity: 0;
+    }
+}
+
+.symbol-input100 {
+    font-size: 25px;
+
+    display: -webkit-box;
+    display: -webkit-flex;
+    display: -moz-box;
+    display: -ms-flexbox;
+    display: flex;
+    align-items: center;
+    position: absolute;
+    border-radius: 25px;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    padding-left: 25px;
+    pointer-events: none;
+    color: #999999;
+
+    -webkit-transition: color 0.4s;
+    -o-transition: color 0.4s;
+    -moz-transition: color 0.4s;
+    transition: color 0.4s;
+
+    -webkit-transition: padding 0.4s;
+    -o-transition: padding 0.4s;
+    -moz-transition: padding 0.4s;
+    transition: padding 0.4s;
+}
+
+.input100:focus + .focus-input100 + .symbol-input100 {
+    color: #555555;
+    padding-left: 20px;
+}
+/* fine stile campi di input */
+
+/* stile bottoni form */
+.form-button.green {
+    background-color: rgb(125, 177, 116);
+    color: transparent;
+}
+
+.form-button.green:hover {
+    background-color: rgb(59, 163, 40);
+}
+
+.form-button.red {
+    background-color: rgb(247, 153, 153);
+    color: transparent;
+}
+
+.form-button.red:hover {
+    background-color: rgb(255, 74, 74);
+}
+/* fine stile bottoni form */
+
+/* stile bottoni animati */
+button.animated {
+    color: transparent;
+    height: 50px;
+    padding: 0px 20px 0px 55px;
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.5;
+    text-transform: uppercase;
+    position: relative;
+    justify-content: center;
+    align-items: center;
+    transition: background-color 0.4s;
+    cursor: pointer;
+
+    /* testo non selezionabile */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+button.animated:hover {
+    background: gray;
+    color: black;
+}
+
+button.animated > i {
+    margin: 0px;
+    position: absolute;
+    left: calc(50% - 14px);
+    bottom: calc(50% - 12.5px);
+    transition: margin ease 0.5s;
+    font-size: 25px;
+    color: black;
+}
+
+button.animated:hover > i {
+    margin-left: calc(-50% + 28px);
+    color: black;
+}
+/* fine stile bottoni animati */
