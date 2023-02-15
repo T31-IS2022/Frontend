@@ -2,7 +2,7 @@ import { createApp } from "vue";
 import App from "./App.vue";
 import router from "./router";
 
-import "./assets/main.css";
+import "../public/main.css";
 
 //creazione dell'applicazione vue passandogli il container root
 const app = createApp(App);

@@ -10,7 +10,7 @@ let active = reactive({
 const props = defineProps({
     defaultPhotoURL: String
 });
-const defaultPhotoURL = props.defaultPhotoURL?`${HOST}${props.defaultPhotoURL}`:`./src/assets/profile-default.png`;
+const defaultPhotoURL = props.defaultPhotoURL?`${HOST}${props.defaultPhotoURL}`:`../../public/profile-default.png`;
 
 //simula un click sul campo nascosto per caricare la foto
 function selectPhoto() {
@@ -166,7 +166,7 @@ function deletePhoto(){
         canvas.setAttribute("height", img.height);
         canvas.getContext("2d").drawImage(img, 0, 0);
     }, {once: true});
-    img.setAttribute('src', './src/assets/profile-default.png')
+    img.setAttribute('src', '../../public/profile-default.png')
 }
 
 defineExpose({
