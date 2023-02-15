@@ -3,6 +3,7 @@ import { ref } from "vue";
 import { RouterLink, RouterView } from "vue-router";
 import Login from "@/components/Login.vue";
 import GestorePopup from "@/components/GestorePopup.vue";
+import { logUser } from "./states/loggedUser";
 
 function changeGradient(nextActive) {
     let active = document.getElementById(nextActive);
@@ -44,6 +45,8 @@ function fun2(titolo, descrizione) {
 function fun3(titolo, descrizione) {
     gestorePopup.value.conferma(titolo, descrizione);
 }
+
+logUser()
 </script>
 
 <template>

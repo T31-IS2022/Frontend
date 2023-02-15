@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
+import { logUser, loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
 
 const emit = defineEmits(["login", "errore", "info", "successo"]);
 
@@ -42,10 +42,9 @@ function login() {
                         );
                     } else {
                         // recupero le informazioni su questo utente
-                        setLoggedUser(data);
-
-                        getUserData(email.value);
-
+                        logUser(data).catch((e)=>{
+                            emit("errore","Errore", "Sessione scaduta")
+                        })
                         console.log(data);
                     }
 

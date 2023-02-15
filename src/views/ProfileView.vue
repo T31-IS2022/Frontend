@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted } from "vue";
-import { loggedUser, setLoggedUser, clearLoggedUser } from "../states/loggedUser.js";
+import { loggedUser, setLoggedUser, clearLoggedUser, logUser } from "../states/loggedUser.js";
 import { reactive } from "vue";
 import InputFoto from "../components/inputFoto.vue";
 import router from "../router";
@@ -106,10 +106,11 @@ async function saveProfile() {
                             //chiusura della modifica del form
                             edit(false);
 
-                            loggedUser.token = data.token;
+//                            loggedUser.token = data.token;
 
                             //aggiornamento dei dati salvati localmente
-                            getUserData(email.value);
+                            //getUserData(email.value);
+                            logUser(data);
                         }
 
                         return;
