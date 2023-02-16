@@ -1,6 +1,23 @@
 <script setup>
+import { loggedUser } from '../states/loggedUser';
+const emit = defineEmits(['deleted'])
+
 const props = defineProps(['prenotazione']);
 const prenotazione = props.prenotazione;
+
+const VITE_BACKEND = import.meta.env.VITE_BACKEND;
+const cancella=()=>{
+    const headers = new Headers()
+    headers.append('x-access-token',loggedUser.token)
+    fetch(`${VITE_BACKEND}/prenotazione/${prenotazione._id}`,{
+        method: "DELETE",
+        headers: headers
+    })
+    .then(res=>{
+        if (res.ok)
+            emit("deleted")
+    })
+}
 </script>
 
 <template>
@@ -23,6 +40,8 @@ const prenotazione = props.prenotazione;
                 </ul>
             </fieldset>
         </div>
+        
+        <button @click="cancella">DELETE</button>
 
     </fieldset>
 </template>

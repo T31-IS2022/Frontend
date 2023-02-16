@@ -22,14 +22,18 @@ fetch(`${HOST}/prenotazione/byUtente?id=${loggedUser.id}`,{
 .catch((error) => {
     emit("errore", "Errore", "Impossibile recuperare le prenotazioni dell'utente.");
 });
+const cancella = (i)=>{
+    prenotazioni.value.splice(i,1);
+    emit("successo","Prenotazione Cancellata","")
+}
 </script>
 
 <template>
     <main>
         <h2>Sei nella pagina prenotazioni</h2>
         <h3>Le tue prenotazioni</h3>
-        <div v-for="prenotazione of prenotazioni" v-bind:key="prenotazione._id">
-            <CardPrenotazione :prenotazione="prenotazione"></CardPrenotazione>
+        <div v-for="(prenotazione,i) in prenotazioni" v-bind:key="prenotazione._id">
+            <CardPrenotazione @deleted="cancella(i)" :prenotazione="prenotazione"></CardPrenotazione>
         </div>
 
         <h1>Effettua Una Prenotazione</h1>
