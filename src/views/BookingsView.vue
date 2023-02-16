@@ -1,6 +1,7 @@
 <script setup>
 import { ref } from "vue";
 import CardPrenotazione from "../components/CardPrenotazione.vue";
+import FormPrenotazione from "../components/FormPrenotazione.vue";
 import { loggedUser } from "../states/loggedUser";
 
 const emit = defineEmits(["errore", "info", "successo"]);
@@ -32,6 +33,7 @@ fetch(`${HOST}/prenotazione/byUtente?id=${loggedUser.id}`,{
         </div>
 
         <h3>Effettua Una Prenotazione</h3>
+        <FormPrenotazione></FormPrenotazione>
     </main>
 </template>
 

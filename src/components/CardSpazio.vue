@@ -1,8 +1,9 @@
 <script setup>
 import CardServizio from "./CardServizio.vue";
 
-const props = defineProps(["spazio"]);
+const props = defineProps(["spazio", "hideServizi"]);
 const spazio = props.spazio;
+const hideServizi = props.hideServizi || false;
 
 const urlFoto = import.meta.env.VITE_BACKEND + spazio.URLfoto;
 </script>
@@ -23,7 +24,7 @@ const urlFoto = import.meta.env.VITE_BACKEND + spazio.URLfoto;
             <img :src="urlFoto" :alt="spazio.nome" class="rounded-corners-small foto-spazio" />
         </div>
 
-        <div v-if="spazio.servizi.length > 0" class="container-servizi">
+        <div v-if="spazio.servizi.length > 0 && !hideServizi" class="container-servizi">
             <h4>Questo spazio dispone dei seguenti servizi:</h4>
             <div>
                 <div v-for="servizio in spazio.servizi" v-bind:key="servizio._id">
