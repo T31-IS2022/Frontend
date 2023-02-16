@@ -32,7 +32,7 @@ fetch(`${HOST}/prenotazione/byUtente?id=${loggedUser.id}`,{
             <CardPrenotazione :prenotazione="prenotazione"></CardPrenotazione>
         </div>
 
-        <h3>Effettua Una Prenotazione</h3>
+        <h1>Effettua Una Prenotazione</h1>
         <FormPrenotazione></FormPrenotazione>
     </main>
 </template>
