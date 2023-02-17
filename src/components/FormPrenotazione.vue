@@ -200,7 +200,7 @@ const submit = () => {
 </script>
 
 <template>
-    <p>Prezzo: €{{ prezzo }}</p>
+    <p class="total-price">Costo totale: {{ prezzo }}€</p>
     <form onsubmit="return false">
         <div v-for="(ricorrenza, i) of ricorrenze">
             <div class="rounded-corners container-nuova-ricorrenza">
@@ -311,12 +311,12 @@ const submit = () => {
                 type="button"
                 class="form-button red animated rounded-corners-small"
                 @click="emit('toListaPrenotazioni')">
-                <i class="fa-solid fa-xmark" aria-hidden="true"></i>
+                <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                 <span>Annulla</span>
             </button>
 
             <button type="reset" class="form-button animated rounded-corners-small" @click="reset">
-                <i class="fa-solid fa-plus" aria-hidden="true"></i>
+                <i class="fa-solid fa-eraser" aria-hidden="true"></i>
                 <span>Resetta il form</span>
             </button>
 
@@ -324,7 +324,7 @@ const submit = () => {
                 type="submit"
                 class="form-button green animated rounded-corners-small"
                 @click="submit">
-                <i class="fa-solid fa-check" aria-hidden="true"></i>
+                <i class="fa-solid fa-circle-check" aria-hidden="true"></i>
                 <span>Salva prenotazione</span>
             </button>
         </div>
@@ -332,6 +332,10 @@ const submit = () => {
 </template>
 
 <style scoped>
+.total-price {
+    margin-left: 30px;
+}
+
 .container-nuova-ricorrenza {
     background: rgba(255, 255, 255, 0.5);
     margin: 10px 30px 30px 30px;

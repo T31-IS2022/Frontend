@@ -169,17 +169,13 @@ html {
 }
 
 #bg-blue {
-    background: hsla(248, 87%, 36%, 1);
+    background: hsl(235, 100%, 46%);
 
-    background: linear-gradient(45deg, hsla(248, 87%, 36%, 1) 0%, hsla(191, 75%, 60%, 1) 100%);
+    background: linear-gradient(45deg, hsl(235, 100%, 46%) 0%, hsla(191, 75%, 60%, 1) 100%);
 
-    background: -moz-linear-gradient(45deg, hsla(248, 87%, 36%, 1) 0%, hsla(191, 75%, 60%, 1) 100%);
+    background: -moz-linear-gradient(45deg, hsl(235, 100%, 46%) 0%, hsla(191, 75%, 60%, 1) 100%);
 
-    background: -webkit-linear-gradient(
-        45deg,
-        hsla(248, 87%, 36%, 1) 0%,
-        hsla(191, 75%, 60%, 1) 100%
-    );
+    background: -webkit-linear-gradient(45deg, hsl(235, 100%, 46%) 0%, hsla(191, 75%, 60%, 1) 100%);
 
     filter: progid: DXImageTransform.Microsoft.gradient( startColorstr="#210cae", endColorstr="#4dc9e6", GradientType=1 );
 }

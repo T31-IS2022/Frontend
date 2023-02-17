@@ -42,9 +42,9 @@ function login() {
                         );
                     } else {
                         // recupero le informazioni su questo utente
-                        logUser(data).catch((e)=>{
-                            emit("errore","Errore", "Sessione scaduta")
-                        })
+                        logUser(data).catch((e) => {
+                            emit("errore", "Errore", "Sessione scaduta");
+                        });
                         console.log(data);
                     }
 
@@ -159,14 +159,14 @@ function togglePopupLogin() {
                     <div class="button-line">
                         <button
                             type="button"
-                            class="form-button red animated rounded-corners-small"
+                            class="form-button animated rounded-corners-small"
                             @click="togglePopupLogin()">
                             <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                             <span>Chiudi</span>
                         </button>
                         <button
                             type="button"
-                            class="form-button green animated rounded-corners-small"
+                            class="form-button red animated rounded-corners-small"
                             @click="logout">
                             <i class="fa-solid fa-right-from-bracket" aria-hidden="true"></i>
                             <span>Logout</span>
@@ -210,7 +210,7 @@ function togglePopupLogin() {
                     <div class="button-line">
                         <button
                             type="button"
-                            class="form-button red animated rounded-corners-small"
+                            class="form-button animated rounded-corners-small"
                             @click="togglePopupLogin()">
                             <i class="fa-solid fa-circle-xmark" aria-hidden="true"></i>
                             <span>Chiudi</span>
