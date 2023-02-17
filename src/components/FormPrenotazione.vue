@@ -190,10 +190,10 @@ const submit = () => {
         body: formData,
     }).then((res) => {
         if (res.ok) {
-            emit("successo", "AAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            emit("successo", "Successo", "Prenotazione avvenuta con successo");
             emit("toListaPrenotazioni");
         } else {
-            emit("errore", "AAAAAAAAA", "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            emit("errore", "Errore", "Impossibile salvare la prenotazione");
         }
     });
 };
@@ -287,7 +287,7 @@ const submit = () => {
                         </div>
                     </div>
                 </div>
-                <div class="container-rimuovi-ricorrenza" v-if="i >= 1">
+                <div class="container-rimuovi-ricorrenza" v-if="ricorrenze.length>1">
                     <button
                         type="button"
                         class="form-button red animated rounded-corners-small"

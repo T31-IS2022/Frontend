@@ -41,7 +41,7 @@ document.getElementById("page-scroll").addEventListener("scroll", (e) => {
 
 <template>
     <main>
-        <h2>Sei nella pagina oratorio</h2>
+        <h2>Spazi e servizi offerti dall'oratorio</h2>
         <div v-for="spazio in spazi" v-bind:key="spazio._id">
             <CardSpazio :spazio="spazio"></CardSpazio>
         </div>

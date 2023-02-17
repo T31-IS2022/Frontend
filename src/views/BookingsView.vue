@@ -45,6 +45,12 @@ function listaPrenotazioni() {
     getPrenotazioni();
     bookingStatus.status = false;
 }
+const erroreForm = (b,c)=>{
+    emit("errore",b,c)
+}
+const successoForm = (b,c)=>{
+    emit("successo",b,c)
+}
 </script>
 
 <template>
@@ -65,19 +71,24 @@ function listaPrenotazioni() {
                         <span>Nuova prenotazione</span>
                     </button>
                 </div>
-                <h3>Le tue prenotazioni</h3>
 
-                <div v-for="(prenotazione, i) in prenotazioni" v-bind:key="prenotazione._id">
-                    <CardPrenotazione
-                        @deleted="cancella(i)"
-                        :prenotazione="prenotazione"></CardPrenotazione>
+                <h3>Le tue prenotazioni</h3>
+                <div v-if="prenotazioni.length>0">
+                    <div v-for="(prenotazione, i) in prenotazioni" v-bind:key="prenotazione._id">
+                        <CardPrenotazione
+                            @deleted="cancella(i)"
+                            :prenotazione="prenotazione"></CardPrenotazione>
+                    </div>
+                </div>
+                <div v-else>
+                    <p>Non hai nessuna prenotazione</p>
                 </div>
             </div>
             <div v-if="bookingStatus.status">
                 <br />
                 <h3>Effettua Una Prenotazione</h3>
                 <br />
-                <FormPrenotazione @toListaPrenotazioni="listaPrenotazioni"></FormPrenotazione>
+                <FormPrenotazione @successo="(b,c)=>{successoForm(b,c)}" @errore="(b,c)=>{erroreForm(b,c)}" @toListaPrenotazioni="listaPrenotazioni"></FormPrenotazione>
             </div>
         </div>
     </main>
