@@ -139,6 +139,30 @@ input:-ms-input-placeholder {
 .form-button.red:hover {
     background-color: rgb(255, 74, 74);
 }
+
+.add-button {
+    color: rgb(75, 75, 75);
+    border: none;
+    font-size: 18px;
+    font-weight: bold;
+    line-height: 1.5;
+    text-transform: uppercase;
+    transition: background-color 0.4s;
+    cursor: pointer;
+
+    /* testo non selezionabile */
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.add-button:hover {
+    background: rgba(255, 255, 255, 0.6);
+    color: black;
+}
 /* fine stile bottoni form */
 
 /* stile bottoni animati */
@@ -167,7 +191,7 @@ button.animated {
 }
 
 button.animated:hover {
-    background: gray;
+    background: rgba(255, 255, 255, 0.7);
     color: black;
 }
 
