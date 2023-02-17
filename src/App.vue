@@ -46,53 +46,30 @@ function fun3(titolo, descrizione) {
     gestorePopup.value.conferma(titolo, descrizione);
 }
 
-logUser()
+logUser();
 </script>
 
 <template>
-    <!--
-    <header>
-        <img alt="Vue logo" class="logo" src="@/assets/logo.svg" width="125" height="125" />
-
-        <div class="wrapper">
-        <HelloWorld msg="You did it!" />
-
-        <nav>
-            <RouterLink to="/">Home</RouterLink>
-            <RouterLink to="/about">About</RouterLink>
-        </nav>
-        </div>
-    </header>
-
-    <RouterView />
-    -->
-
-    <div id="bg-orange" class="background bg-active"></div>
+    <div id="bg-orange" class="background"></div>
     <div id="bg-yellow" class="background"></div>
     <div id="bg-green" class="background"></div>
-    <div id="bg-blue" class="background"></div>
+    <div id="bg-blue" class="background bg-active"></div>
     <div id="bg-violet" class="background"></div>
     <div id="bg-black" class="dark-background"></div>
 
     <div id="header">
         <nav id="navbar" class="acrylic rounded-corners">
-            <RouterLink to="/" class="acrylic" @click="changeGradient('bg-orange')"
-                >Home</RouterLink
-            >
-            <RouterLink to="/oratorio" class="acrylic" @click="changeGradient('bg-yellow')"
+            <RouterLink to="/" class="acrylic" @click="changeGradient('bg-blue')">Home</RouterLink>
+            <RouterLink to="/oratorio" class="acrylic" @click="changeGradient('bg-blue')"
                 >Oratorio</RouterLink
             >
-            <RouterLink to="/eventi" class="acrylic" @click="changeGradient('bg-green')"
+            <RouterLink to="/eventi" class="acrylic" @click="changeGradient('bg-blue')"
                 >Eventi</RouterLink
             >
             <RouterLink to="/prenotazioni" class="acrylic" @click="changeGradient('bg-blue')"
                 >Prenotazioni</RouterLink
             >
-            <!-- 
-            <button class="acrylic" @click="changeGradient('bg-violet')">
-                Login
-            </button>
-            -->
+
             <!-- componente per eseguire il login -->
             <Login @errore="fun1" @info="fun2" @successo="fun3" />
         </nav>
@@ -104,8 +81,6 @@ logUser()
     <div id="page-scroll">
         <div id="content">
             <div class="acrylic rounded-corners">
-                <h2>Lorem ipsum</h2>
-                <p>Lorem ipsum dolor sit amet</p>
                 <!-- componente che visualizza la vista selezionata nella navbar -->
                 <RouterView @errore="fun1" @info="fun2" @successo="fun3" />
             </div>

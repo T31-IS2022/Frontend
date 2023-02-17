@@ -51,6 +51,7 @@ const urlFoto = import.meta.env.VITE_BACKEND + servizio.URLfoto;
 .info-servizio ul {
     width: fit-content;
     padding: 0px 20px;
+    margin-bottom: 10px;
 }
 
 .foto-servizio > img {
