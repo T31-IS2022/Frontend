@@ -220,7 +220,7 @@ const submit = () => {
                                     @change="getDisponibilità(i)" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
-                                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
                                 </span>
                             </div>
                         </td>
@@ -235,7 +235,7 @@ const submit = () => {
                                     @change="getDisponibilità(i)" />
                                 <span class="focus-input100"></span>
                                 <span class="symbol-input100">
-                                    <i class="fa-solid fa-lock" aria-hidden="true"></i>
+                                    <i class="fa-solid fa-calendar-days" aria-hidden="true"></i>
                                 </span>
                             </div>
                         </td>
@@ -287,7 +287,7 @@ const submit = () => {
                         </div>
                     </div>
                 </div>
-                <div class="container-rimuovi-ricorrenza" v-if="ricorrenze.length>1">
+                <div class="container-rimuovi-ricorrenza" v-if="ricorrenze.length > 1">
                     <button
                         type="button"
                         class="form-button red animated rounded-corners-small"
